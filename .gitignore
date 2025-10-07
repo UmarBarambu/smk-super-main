@@ -17,6 +17,7 @@ package-lock.json
 .env.test.local
 .env.production.local
 **/.env*
+**/.env.production
 
 # =====================================
 # ⚛️ Frontend (client)
@@ -95,3 +96,6 @@ Thumbs.db
 # 📦 Miscellaneous
 # =====================================
 *.log
+
+# Strapi uploads (optional — remove if you want uploaded files in GitHub)
+my-strapi/public/uploads/
