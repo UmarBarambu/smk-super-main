@@ -4,7 +4,7 @@ import AdminPanel from "./pages/AdminPanel/AdminPanel";
 import { Routes, Route } from "react-router-dom";
 import SignIn from "./pages/Auth/SignIn";
 // import SchoolCMS from "./pages/cms/dashboard";
-import "./i18n";  // 🔹 add this line
+import "./i18n";  // 🔹 add this li
 
 function App() {
   return (
