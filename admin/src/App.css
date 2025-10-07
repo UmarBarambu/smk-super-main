@@ -1,0 +1,33 @@
+/* 🔹 Outside widget text (navbar) */
+.goog-te-gadget {
+  color: white !important;
+}
+
+.goog-te-gadget-simple span,
+.goog-te-gadget-simple a {
+  color: white !important;
+}
+
+/* 🔹 "Powered by Google Translate" */
+.goog-logo-link,
+.goog-te-gadget span a {
+  color: white !important;
+  text-decoration: none !important;
+}
+
+/* 🔹 Dropdown options (inside the select) */
+.goog-te-combo {
+  color: black !important;      
+  background-color: white !important; 
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+/* Ensure container has enough width */
+.translate-widget {
+  min-width: 150px;
+}
+#google_translate_element iframe {
+  width: 150px !important;
+  height: 40px !important;
+}

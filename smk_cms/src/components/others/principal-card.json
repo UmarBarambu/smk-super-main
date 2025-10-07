@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_others_principal_cards",
+  "info": {
+    "displayName": "PrincipalCard"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "motto": {
+      "type": "string"
+    },
+    "vmv": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

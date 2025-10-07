@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_vision_and_mission_missions",
+  "info": {
+    "displayName": "Mission"
+  },
+  "options": {},
+  "attributes": {
+    "hd1": {
+      "type": "text"
+    },
+    "hd2": {
+      "type": "text"
+    },
+    "Cards": {
+      "type": "component",
+      "component": "others.mission-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

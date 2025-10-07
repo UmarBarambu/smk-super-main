@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_others_foot_details",
+  "info": {
+    "displayName": "FootDetails"
+  },
+  "options": {},
+  "attributes": {
+    "motto": {
+      "type": "text"
+    },
+    "contact": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

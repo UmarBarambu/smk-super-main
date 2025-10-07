@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_alumni_overviews",
+  "info": {
+    "displayName": "Overview"
+  },
+  "options": {},
+  "attributes": {
+    "stats": {
+      "type": "json"
+    },
+    "greetings": {
+      "type": "json"
+    },
+    "Persons": {
+      "type": "component",
+      "component": "others.alumni-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

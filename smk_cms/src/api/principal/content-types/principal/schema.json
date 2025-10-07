@@ -1,0 +1,22 @@
+{
+  "kind": "singleType",
+  "collectionName": "principals",
+  "info": {
+    "singularName": "principal",
+    "pluralName": "principals",
+    "displayName": "Principal"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Sections": {
+      "type": "dynamiczone",
+      "components": [
+        "principal.hero",
+        "principal.speech"
+      ]
+    }
+  }
+}

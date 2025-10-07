@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_contact_us_faqs",
+  "info": {
+    "displayName": "Faqs"
+  },
+  "options": {},
+  "attributes": {
+    "faq": {
+      "type": "component",
+      "component": "others.faq",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,44 @@
+{
+  "name": "smk-cms",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A Strapi application",
+  "scripts": {
+    "build": "strapi build",
+    "console": "strapi console",
+    "deploy": "strapi deploy",
+    "dev": "strapi develop",
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "strapi": "strapi",
+    "upgrade": "npx @strapi/upgrade latest",
+    "upgrade:dry": "npx @strapi/upgrade latest --dry"
+  },
+  "dependencies": {
+    "@strapi/plugin-cloud": "5.15.1",
+    "@strapi/plugin-users-permissions": "5.15.1",
+    "@strapi/provider-upload-cloudinary": "^5.17.0",
+    "@strapi/strapi": "5.15.1",
+    "better-sqlite3": "^12.2.0",
+    "cloudinary": "^2.7.0",
+    "pg": "^8.8.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.0.0",
+    "styled-components": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0 <=22.x.x",
+    "npm": ">=6.0.0"
+  },
+  "strapi": {
+    "uuid": "2c7b6be9-e843-4950-a91e-40615716631f",
+    "installId": "3b89caa6ea925cae9466ae17d67cf086219ccfaae96a3da4b5f00d0dc5772316"
+  }
+}

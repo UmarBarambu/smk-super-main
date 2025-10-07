@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_contact_us_contact_infos",
+  "info": {
+    "displayName": "ContactInfo"
+  },
+  "options": {},
+  "attributes": {
+    "schoolAddress": {
+      "type": "blocks"
+    },
+    "telephone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "schoolHours": {
+      "type": "blocks"
+    }
+  },
+  "config": {}
+}

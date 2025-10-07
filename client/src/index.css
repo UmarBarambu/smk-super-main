@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+button {
+  cursor: pointer;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("./assets/fonts/Helvetica.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica-Bold";
+  src: url("./assets/fonts/Helvetica-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica-Oblique";
+  src: url("./assets/fonts/Helvetica-Oblique.ttf") format("truetype");
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Helvetica-Compressed";
+  src: url("./assets/fonts/helvetica-compressed.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+    font-family: "Helvetica", sans-serif;
+  }
+  

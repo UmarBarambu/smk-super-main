@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_achievements_footers",
+  "info": {
+    "displayName": "Footer"
+  },
+  "options": {},
+  "attributes": {
+    "stats": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

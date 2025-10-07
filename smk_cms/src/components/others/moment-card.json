@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_others_moment_cards",
+  "info": {
+    "displayName": "MomentCard"
+  },
+  "options": {},
+  "attributes": {
+    "img": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "details": {
+      "type": "text"
+    },
+    "date": {
+      "type": "date"
+    },
+    "location": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

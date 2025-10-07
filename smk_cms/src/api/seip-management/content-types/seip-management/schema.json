@@ -1,0 +1,28 @@
+{
+  "kind": "singleType",
+  "collectionName": "seip_managements",
+  "info": {
+    "singularName": "seip-management",
+    "pluralName": "seip-managements",
+    "displayName": "SEIPManagement"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "coverImg": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "properties": {
+      "type": "json"
+    }
+  }
+}

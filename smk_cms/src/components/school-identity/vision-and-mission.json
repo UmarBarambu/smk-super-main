@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_school_identity_vision_and_missions",
+  "info": {
+    "displayName": "VisionAndMission"
+  },
+  "options": {},
+  "attributes": {
+    "Cards": {
+      "type": "component",
+      "component": "others.school-identity-vision-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

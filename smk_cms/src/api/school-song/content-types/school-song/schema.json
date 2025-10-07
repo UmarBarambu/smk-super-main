@@ -1,0 +1,21 @@
+{
+  "kind": "singleType",
+  "collectionName": "school_songs",
+  "info": {
+    "singularName": "school-song",
+    "pluralName": "school-songs",
+    "displayName": "SchoolSong"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "song": {
+      "type": "blocks"
+    },
+    "pledge": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_principal_speeches",
+  "info": {
+    "displayName": "Speech"
+  },
+  "options": {},
+  "attributes": {
+    "details": {
+      "type": "blocks"
+    }
+  },
+  "config": {}
+}

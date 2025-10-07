@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_school_identity_core_values",
+  "info": {
+    "displayName": "CoreValues"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "Cards": {
+      "type": "component",
+      "component": "others.student-identity-core-values-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

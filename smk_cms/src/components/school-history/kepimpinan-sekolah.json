@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_school_history_kepimpinan_sekolahs",
+  "info": {
+    "displayName": "KepimpinanSekolah"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "text"
+    },
+    "list": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

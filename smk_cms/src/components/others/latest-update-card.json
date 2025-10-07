@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_others_latest_update_cards",
+  "info": {
+    "displayName": "LatestUpdateCard"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "date": {
+      "type": "datetime"
+    },
+    "imageLabel": {
+      "type": "string"
+    },
+    "details": {
+      "type": "text"
+    },
+    "likes": {
+      "type": "integer"
+    },
+    "comments": {
+      "type": "integer"
+    }
+  },
+  "config": {}
+}

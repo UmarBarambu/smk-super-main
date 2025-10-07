@@ -1,0 +1,97 @@
+# =====================================
+# 🌐 General Node.js / JavaScript rules
+# =====================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+
+# =====================================
+# 🔐 Environment files
+# =====================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+**/.env*
+
+# =====================================
+# ⚛️ Frontend (client)
+# =====================================
+client/node_modules/
+client/.env
+client/dist/
+client/build/
+client/.cache/
+client/.tmp/
+client/.eslintcache
+client/.vite/
+
+# =====================================
+# 🧱 Backend / Strapi / CMS folders
+# =====================================
+cms/node_modules/
+cms/.env
+cms/.tmp/
+cms/.cache/
+cms/build/
+cms/dist/
+cms/logs/
+cms/public/uploads/
+cms/exports/
+cms/imports/
+
+smk_cms/node_modules/
+smk_cms/.env
+smk_cms/.tmp/
+smk_cms/.cache/
+smk_cms/build/
+smk_cms/dist/
+smk_cms/logs/
+smk_cms/public/uploads/
+smk_cms/exports/
+smk_cms/imports/
+
+# Ignore SQLite DB (if Strapi uses SQLite)
+cms/data.db
+smk_cms/data.db
+
+# =====================================
+# 🧭 Server folder
+# =====================================
+server/node_modules/
+server/.env
+server/logs/
+server/.cache/
+server/.tmp/
+server/build/
+server/dist/
+
+# =====================================
+# 🧑‍💻 Admin folder (if it’s frontend)
+# =====================================
+admin/node_modules/
+admin/.env
+admin/dist/
+admin/build/
+admin/.cache/
+admin/.tmp/
+admin/.eslintcache
+admin/.vite/
+
+# =====================================
+# ⚙️ System / Editor files
+# =====================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.iml
+
+# =====================================
+# 📦 Miscellaneous
+# =====================================
+*.log

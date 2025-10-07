@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_org_chart_stats",
+  "info": {
+    "displayName": "Stats"
+  },
+  "options": {},
+  "attributes": {
+    "totalStaffs": {
+      "type": "string"
+    },
+    "departments": {
+      "type": "string"
+    },
+    "advancedDegrees": {
+      "type": "string"
+    },
+    "avgYears": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

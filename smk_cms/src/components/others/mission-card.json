@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_others_mission_cards",
+  "info": {
+    "displayName": "MissionCard"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "details": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

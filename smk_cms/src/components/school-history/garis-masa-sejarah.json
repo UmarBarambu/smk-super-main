@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_school_history_garis_masa_sejarahs",
+  "info": {
+    "displayName": "GarisMasaSejarah"
+  },
+  "options": {},
+  "attributes": {
+    "GarisMasaSejarahCards": {
+      "type": "component",
+      "component": "others.garis-masa-sejarah-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

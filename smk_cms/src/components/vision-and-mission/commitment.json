@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_vision_and_mission_commitments",
+  "info": {
+    "displayName": "Commitment"
+  },
+  "options": {},
+  "attributes": {
+    "imgs": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  },
+  "config": {}
+}

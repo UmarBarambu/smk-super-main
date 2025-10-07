@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_homepage_academic_excellences",
+  "info": {
+    "displayName": "AcademicExcellence"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "excellence": {
+      "type": "component",
+      "component": "others.acad-exc-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

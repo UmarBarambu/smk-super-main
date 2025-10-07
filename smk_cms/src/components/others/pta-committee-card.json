@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_others_pta_committee_cards",
+  "info": {
+    "displayName": "PtaCommitteeCard"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    }
+  },
+  "config": {}
+}

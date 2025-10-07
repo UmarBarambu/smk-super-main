@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_homepage_marquees",
+  "info": {
+    "displayName": "Marquee"
+  },
+  "options": {},
+  "attributes": {
+    "trending": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

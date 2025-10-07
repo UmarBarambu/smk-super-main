@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_achievements_headers",
+  "info": {
+    "displayName": "Header"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "details": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

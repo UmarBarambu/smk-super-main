@@ -1,0 +1,27 @@
+{
+  "kind": "singleType",
+  "collectionName": "abouts",
+  "info": {
+    "singularName": "about",
+    "pluralName": "abouts",
+    "displayName": "SchoolHistory",
+    "description": "Write about yourself and the content you create"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Sections": {
+      "type": "dynamiczone",
+      "components": [
+        "school-history.pengenalan",
+        "school-history.pencapaian",
+        "school-history.misi-dan-matlamat",
+        "school-history.kepimpinan-sekolah",
+        "school-history.kemudahan-dan-pembinaan",
+        "school-history.garis-masa-sejarah"
+      ]
+    }
+  }
+}

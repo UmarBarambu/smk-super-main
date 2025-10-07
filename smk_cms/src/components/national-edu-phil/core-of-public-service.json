@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_national_edu_phil_core_of_public_services",
+  "info": {
+    "displayName": "CoreOfPublicService"
+  },
+  "options": {},
+  "attributes": {
+    "services": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

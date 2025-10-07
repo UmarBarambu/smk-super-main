@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_school_history_pencapaians",
+  "info": {
+    "displayName": "Pencapaian"
+  },
+  "options": {},
+  "attributes": {
+    "list": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

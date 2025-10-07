@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_teachers_and_staffs_missions_and_values",
+  "info": {
+    "displayName": "MissionsAndValues"
+  },
+  "options": {},
+  "attributes": {
+    "Cards": {
+      "type": "component",
+      "component": "others.card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

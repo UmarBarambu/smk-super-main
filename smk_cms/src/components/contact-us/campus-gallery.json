@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_contact_us_campus_galleries",
+  "info": {
+    "displayName": "CampusGallery"
+  },
+  "options": {},
+  "attributes": {
+    "galleries": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  },
+  "config": {}
+}
