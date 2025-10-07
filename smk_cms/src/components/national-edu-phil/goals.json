@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_national_edu_phil_goals",
+  "info": {
+    "displayName": "Goals"
+  },
+  "options": {},
+  "attributes": {
+    "goals": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

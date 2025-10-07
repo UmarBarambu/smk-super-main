@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_homepage_testimoials",
+  "info": {
+    "displayName": "Testimoials"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "testimony": {
+      "type": "component",
+      "component": "others.testimony-c-ard",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

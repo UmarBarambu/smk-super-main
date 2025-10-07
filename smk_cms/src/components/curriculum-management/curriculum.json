@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_curriculum_management_curricula",
+  "info": {
+    "displayName": "Curriculum"
+  },
+  "options": {},
+  "attributes": {
+    "lists": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

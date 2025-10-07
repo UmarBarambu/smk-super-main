@@ -1,0 +1,28 @@
+{
+  "kind": "singleType",
+  "collectionName": "curriculum_managements",
+  "info": {
+    "singularName": "curriculum-management",
+    "pluralName": "curriculum-managements",
+    "displayName": "CurriculumManagement"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "coverImg": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "properties": {
+      "type": "json"
+    }
+  }
+}

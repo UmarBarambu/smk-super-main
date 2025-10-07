@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "national_edu_philosophies",
+  "info": {
+    "singularName": "national-edu-philosophy",
+    "pluralName": "national-edu-philosophies",
+    "displayName": "NationalEduPhilosophy"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Sections": {
+      "type": "dynamiczone",
+      "components": [
+        "national-edu-phil.national-edu-philosophy",
+        "national-edu-phil.goals",
+        "national-edu-phil.core-of-public-service"
+      ]
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_pta_activities",
+  "info": {
+    "displayName": "Activities"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "activities": {
+      "type": "component",
+      "component": "others.card",
+      "repeatable": true
+    },
+    "aEvents": {
+      "type": "component",
+      "component": "others.card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

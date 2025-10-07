@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "teachers_and_staffs",
+  "info": {
+    "singularName": "teachers-and-staff",
+    "pluralName": "teachers-and-staffs",
+    "displayName": "TeachersAndStaff"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Sections": {
+      "type": "dynamiczone",
+      "components": [
+        "teachers-and-staffs.dedicated-team",
+        "teachers-and-staffs.cover-img",
+        "teachers-and-staffs.missions-and-values"
+      ]
+    }
+  }
+}

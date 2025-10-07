@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_others_vision_cards",
+  "info": {
+    "displayName": "VisionCard"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "details": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

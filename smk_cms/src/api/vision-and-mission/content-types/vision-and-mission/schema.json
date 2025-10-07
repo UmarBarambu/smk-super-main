@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "vision_and_missions",
+  "info": {
+    "singularName": "vision-and-mission",
+    "pluralName": "vision-and-missions",
+    "displayName": "VisionAndMission"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Sections": {
+      "type": "dynamiczone",
+      "components": [
+        "vision-and-mission.vision",
+        "vision-and-mission.mission",
+        "vision-and-mission.commitment"
+      ]
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_pta_memberships",
+  "info": {
+    "displayName": "Membership"
+  },
+  "options": {},
+  "attributes": {
+    "becomeAMember": {
+      "type": "json"
+    },
+    "schedule": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

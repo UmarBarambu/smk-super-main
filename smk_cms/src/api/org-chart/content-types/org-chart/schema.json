@@ -1,0 +1,22 @@
+{
+  "kind": "singleType",
+  "collectionName": "org_charts",
+  "info": {
+    "singularName": "org-chart",
+    "pluralName": "org-charts",
+    "displayName": "OrgChart"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Sections": {
+      "type": "dynamiczone",
+      "components": [
+        "org-chart.chart",
+        "org-chart.stats"
+      ]
+    }
+  }
+}

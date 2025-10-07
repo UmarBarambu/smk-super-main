@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_principal_heroes",
+  "info": {
+    "displayName": "Hero"
+  },
+  "options": {},
+  "attributes": {
+    "img": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "details": {
+      "type": "component",
+      "component": "others.principal-card",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

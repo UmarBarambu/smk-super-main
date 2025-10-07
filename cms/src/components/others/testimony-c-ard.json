@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_others_testimony_c_ards",
+  "info": {
+    "displayName": "TestimonyCArd"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "identity": {
+      "type": "string"
+    },
+    "testimony": {
+      "type": "text"
+    },
+    "photo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  },
+  "config": {}
+}

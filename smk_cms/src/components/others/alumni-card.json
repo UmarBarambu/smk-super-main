@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_others_alumni_cards",
+  "info": {
+    "displayName": "AlumniCard"
+  },
+  "options": {},
+  "attributes": {
+    "img": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "batch": {
+      "type": "date"
+    },
+    "role": {
+      "type": "string"
+    },
+    "organization": {
+      "type": "string"
+    },
+    "credit": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

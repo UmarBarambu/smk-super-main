@@ -1,0 +1,26 @@
+# Node dependencies
+**/node_modules/
+
+# Environment files
+**/.env
+**/.env.local
+**/.env.production
+
+# Build and cache
+**/build/
+**/.cache/
+**/.tmp/
+**/dist/
+
+# Logs
+**/logs/
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Strapi uploads (optional — remove this if you want uploaded files in GitHub)
+my-strapi/public/uploads/

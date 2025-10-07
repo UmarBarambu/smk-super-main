@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_homepage_latest_updates",
+  "info": {
+    "displayName": "LatestUpdates"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "updates": {
+      "type": "component",
+      "component": "others.latest-update-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

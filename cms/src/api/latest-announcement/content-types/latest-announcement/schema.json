@@ -1,0 +1,26 @@
+{
+  "kind": "singleType",
+  "collectionName": "latest_announcements",
+  "info": {
+    "singularName": "latest-announcement",
+    "pluralName": "latest-announcements",
+    "displayName": "LatestAnnouncement"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "announcements": {
+      "type": "component",
+      "component": "latest-announcementpage.announement",
+      "repeatable": true
+    },
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_latest_announcementpage_announements",
+  "info": {
+    "displayName": "announement"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "date": {
+      "type": "datetime"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "Important",
+        "Events",
+        "Academic",
+        "Sports",
+        "General"
+      ]
+    },
+    "details": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

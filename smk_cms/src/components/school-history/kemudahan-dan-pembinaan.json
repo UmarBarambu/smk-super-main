@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_school_history_kemudahan_dan_pembinaans",
+  "info": {
+    "displayName": "KemudahanDanPembinaan"
+  },
+  "options": {},
+  "attributes": {
+    "details": {
+      "type": "text"
+    },
+    "imgs": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    }
+  },
+  "config": {}
+}

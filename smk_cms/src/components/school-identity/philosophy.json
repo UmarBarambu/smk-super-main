@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_school_identity_philosophies",
+  "info": {
+    "displayName": "Philosophy"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "philosophy": {
+      "type": "blocks"
+    }
+  },
+  "config": {}
+}

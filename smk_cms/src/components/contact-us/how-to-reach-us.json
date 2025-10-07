@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_contact_us_how_to_reachuses",
+  "info": {
+    "displayName": "HowToReachUs"
+  },
+  "options": {},
+  "attributes": {
+    "publicTransport": {
+      "type": "text"
+    },
+    "byCar": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

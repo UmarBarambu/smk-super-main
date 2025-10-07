@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_teachers_and_staffs_cover_imgs",
+  "info": {
+    "displayName": "CoverImg"
+  },
+  "options": {},
+  "attributes": {
+    "img": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "properties": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

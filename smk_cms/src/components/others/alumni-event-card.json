@@ -1,0 +1,31 @@
+{
+  "collectionName": "components_others_alumni_event_cards",
+  "info": {
+    "displayName": "AlumniEventCard"
+  },
+  "options": {},
+  "attributes": {
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "Reunion",
+        "Workshop",
+        "Networking",
+        "Others"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "date": {
+      "type": "date"
+    },
+    "time": {
+      "type": "time"
+    },
+    "location": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

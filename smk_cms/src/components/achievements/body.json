@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_achievements_bodies",
+  "info": {
+    "displayName": "Body"
+  },
+  "options": {},
+  "attributes": {
+    "lists": {
+      "type": "component",
+      "component": "others.achievement-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

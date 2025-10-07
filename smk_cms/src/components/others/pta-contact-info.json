@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_others_pta_contact_infos",
+  "info": {
+    "displayName": "PtaContactInfo"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

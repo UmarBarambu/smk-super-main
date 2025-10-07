@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_alumni_events",
+  "info": {
+    "displayName": "Events"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "Events": {
+      "type": "component",
+      "component": "others.alumni-event-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

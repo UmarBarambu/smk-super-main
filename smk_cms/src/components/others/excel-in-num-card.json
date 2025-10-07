@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_others_excel_in_num_cards",
+  "info": {
+    "displayName": "ExcelInNumCard"
+  },
+  "options": {},
+  "attributes": {
+    "percentage": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

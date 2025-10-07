@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_school_history_pengenalans",
+  "info": {
+    "displayName": "Pengenalan"
+  },
+  "options": {},
+  "attributes": {
+    "details": {
+      "type": "text"
+    },
+    "theNumbers": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,24 @@
+{
+  "kind": "singleType",
+  "collectionName": "contact_uses",
+  "info": {
+    "singularName": "contact-us",
+    "pluralName": "contact-uses",
+    "displayName": "ContactUs"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Sections": {
+      "type": "dynamiczone",
+      "components": [
+        "contact-us.how-to-reach-us",
+        "contact-us.faqs",
+        "contact-us.contact-info",
+        "contact-us.campus-gallery"
+      ]
+    }
+  }
+}

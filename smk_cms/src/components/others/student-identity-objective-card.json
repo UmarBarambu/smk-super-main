@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_others_student_identity_objective_cards",
+  "info": {
+    "displayName": "StudentIdentityObjectiveCard"
+  },
+  "options": {},
+  "attributes": {
+    "details": {
+      "type": "text"
+    },
+    "translation": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

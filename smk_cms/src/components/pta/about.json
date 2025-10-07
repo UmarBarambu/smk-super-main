@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_pta_abouts",
+  "info": {
+    "displayName": "About"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "details": {
+      "type": "text"
+    },
+    "cards": {
+      "type": "component",
+      "component": "others.card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

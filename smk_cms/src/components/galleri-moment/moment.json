@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_galleri_moment_moments",
+  "info": {
+    "displayName": "Moment"
+  },
+  "options": {},
+  "attributes": {
+    "MomentCards": {
+      "type": "component",
+      "component": "others.moment-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

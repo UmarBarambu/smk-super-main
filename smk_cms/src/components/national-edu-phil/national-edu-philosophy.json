@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_national_edu_phil_national_edu_philosophies",
+  "info": {
+    "displayName": "NationalEduPhilosophy"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "details": {
+      "type": "text"
+    },
+    "Card": {
+      "type": "component",
+      "component": "others.card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

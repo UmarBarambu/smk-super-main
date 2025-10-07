@@ -1,0 +1,44 @@
+{
+  "collectionName": "components_others_achievement_cards",
+  "info": {
+    "displayName": "AchievementCard"
+  },
+  "options": {},
+  "attributes": {
+    "img": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "Academic",
+        "Sports",
+        "Science",
+        "Community"
+      ]
+    },
+    "year": {
+      "type": "integer"
+    },
+    "details": {
+      "type": "json"
+    },
+    "reach": {
+      "type": "enumeration",
+      "enum": [
+        "National",
+        "Regional",
+        "District",
+        "State"
+      ]
+    }
+  },
+  "config": {}
+}

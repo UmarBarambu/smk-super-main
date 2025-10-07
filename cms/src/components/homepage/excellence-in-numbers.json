@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_homepage_excellence_in_numbers",
+  "info": {
+    "displayName": "ExcellenceInNumbers"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "cards": {
+      "type": "component",
+      "component": "others.excel-in-num-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

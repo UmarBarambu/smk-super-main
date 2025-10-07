@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_school_history_misi_dan_matlamats",
+  "info": {
+    "displayName": "MisiDanMatlamat"
+  },
+  "options": {},
+  "attributes": {
+    "quote": {
+      "type": "text"
+    },
+    "details": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

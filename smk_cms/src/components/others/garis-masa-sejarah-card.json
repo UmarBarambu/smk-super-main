@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_others_garis_masa_sejarah_cards",
+  "info": {
+    "displayName": "GarisMasaSejarahCard"
+  },
+  "options": {},
+  "attributes": {
+    "date": {
+      "type": "date"
+    },
+    "title": {
+      "type": "string"
+    },
+    "details": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

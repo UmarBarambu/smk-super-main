@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_teachers_and_staffs_dedicated_teams",
+  "info": {
+    "displayName": "DedicatedTeam"
+  },
+  "options": {},
+  "attributes": {
+    "details": {
+      "type": "text"
+    },
+    "motto": {
+      "type": "json"
+    }
+  },
+  "config": {}
+}

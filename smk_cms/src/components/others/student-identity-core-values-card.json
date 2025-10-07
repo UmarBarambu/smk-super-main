@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_others_student_identity_core_values_cards",
+  "info": {
+    "displayName": "StudentIdentityCoreValuesCard"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

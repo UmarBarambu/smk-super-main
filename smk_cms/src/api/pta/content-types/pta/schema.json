@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "ptas",
+  "info": {
+    "singularName": "pta",
+    "pluralName": "ptas",
+    "displayName": "PTA"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Sections": {
+      "type": "dynamiczone",
+      "components": [
+        "pta.about",
+        "pta.action",
+        "pta.activities",
+        "pta.membership",
+        "pta.contact"
+      ]
+    }
+  }
+}

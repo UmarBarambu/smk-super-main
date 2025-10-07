@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_others_acad_exc_cards",
+  "info": {
+    "displayName": "AcadExcCard"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

@@ -1,0 +1,37 @@
+{
+  "collectionName": "components_others_pta_action_cards",
+  "info": {
+    "displayName": "PtaActionCard"
+  },
+  "options": {},
+  "attributes": {
+    "img": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "text": {
+      "type": "text"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "Meetings",
+        "Events",
+        "Conferences",
+        "Workshops",
+        "Volunteering",
+        "Others"
+      ]
+    }
+  },
+  "config": {}
+}

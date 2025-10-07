@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_pta_actions",
+  "info": {
+    "displayName": "Action"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "Cards": {
+      "type": "component",
+      "component": "others.pta-action-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

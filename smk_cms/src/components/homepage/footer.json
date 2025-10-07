@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_homepage_footers",
+  "info": {
+    "displayName": "Footer"
+  },
+  "options": {},
+  "attributes": {
+    "contact": {
+      "type": "component",
+      "component": "others.foot-details",
+      "repeatable": false
+    }
+  },
+  "config": {}
+}

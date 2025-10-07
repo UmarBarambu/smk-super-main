@@ -1,0 +1,21 @@
+{
+  "kind": "singleType",
+  "collectionName": "galleri_moments",
+  "info": {
+    "singularName": "galleri-moment",
+    "pluralName": "galleri-moments",
+    "displayName": "GalleriMoment"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Sections": {
+      "type": "dynamiczone",
+      "components": [
+        "galleri-moment.moment"
+      ]
+    }
+  }
+}

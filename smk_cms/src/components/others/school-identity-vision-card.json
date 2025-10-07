@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_others_school_identity_vision_cards",
+  "info": {
+    "displayName": "SchoolIdentityVisionCard"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "details": {
+      "type": "text"
+    },
+    "translation": {
+      "type": "text"
+    }
+  },
+  "config": {}
+}

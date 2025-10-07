@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_school_identity_objectives",
+  "info": {
+    "displayName": "Objectives"
+  },
+  "options": {},
+  "attributes": {
+    "Cards": {
+      "type": "component",
+      "component": "others.student-identity-objective-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

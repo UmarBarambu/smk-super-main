@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_alumni_achievements",
+  "info": {
+    "displayName": "Achievements"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "achievements": {
+      "type": "component",
+      "component": "others.alumni-achievement-card1",
+      "repeatable": true
+    },
+    "achievements2": {
+      "type": "component",
+      "component": "others.alumni-achievement-card2",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

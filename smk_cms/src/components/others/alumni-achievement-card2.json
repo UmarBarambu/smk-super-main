@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_others_alumni_achievement_card2s",
+  "info": {
+    "displayName": "AlumniAchievementCard2"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "percentage": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

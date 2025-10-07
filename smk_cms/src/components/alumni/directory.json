@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_alumni_directories",
+  "info": {
+    "displayName": "Directory"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "directories": {
+      "type": "component",
+      "component": "others.alumni-dir-card",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

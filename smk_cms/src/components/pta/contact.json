@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_pta_contacts",
+  "info": {
+    "displayName": "Contact"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "committeeCards": {
+      "type": "component",
+      "component": "others.pta-committee-card",
+      "repeatable": true
+    },
+    "contactInfos": {
+      "type": "component",
+      "component": "others.pta-contact-info",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}
