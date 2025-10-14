@@ -23,8 +23,7 @@ const Checkout = () => {
 
 // Fetch cart items from the API
 const fetchCart = async () => {
-  const api_url = "http://localhost:5003/api"; // ✅   no5 problem fixed 
-
+  const api_url = import.meta.env.VITE_API_URL;
 
   try {
     setLoading(true);
@@ -103,7 +102,7 @@ const fetchCart = async () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const api_url =  "http://localhost:5003/api";   // no4 problem fixed 
+      const api_url =  import.meta.env.VITE_API_URL;
       const token = localStorage.getItem("smk-user-token");
       if (!token) {
         alert("You must be logged in to place an order.");

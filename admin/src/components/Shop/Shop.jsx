@@ -405,7 +405,7 @@ function ProductTable({ products, onEdit, onDelete, onView }) {
                   <div className="flex-shrink-0 h-10 w-10">
                       {product.images && product.images.length > 0 ? (
                         <img
-                           src={`http://localhost:5003/${product.images[0]}`}
+                           src={`${API_BASE_URL}/${product.images[0]}`}
                           // src={product.images[0]}
                           alt={product.name}
                           className="h-10 w-10 rounded-lg object-cover"
@@ -610,7 +610,7 @@ const handleSaveProduct = async (formData) => {
     if (editingProduct?._id) {
       // ✅ Update
       response = await axios.put(
-        `http://localhost:5003/api/products/${editingProduct._id}`,
+        `${API_BASE_URL}/products/${editingProduct._id}`,
         formData,
         {
           headers: {
@@ -622,7 +622,7 @@ const handleSaveProduct = async (formData) => {
     } else {
       // ✅ Create
       response = await axios.post(
-        "http://localhost:5003/api/products",
+        `${API_BASE_URL}/products`,
         formData,
         {
           headers: {

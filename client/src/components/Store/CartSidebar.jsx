@@ -4,8 +4,8 @@ import { X, ShoppingBag, Plus, Minus, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const api_url = "http://localhost:5003/api";   // no6 problem fixed 
-//const API_URL = import.meta.env.VITE_API_URL;
+
+const api_url = import.meta.env.VITE_API_URL;
 
 
 const CartSidebar = ({ isOpen, setIsOpen }) => {
@@ -247,7 +247,7 @@ const removeFromCart = async (productId) => {
                     {/* Product Image */}
                     <div className="w-20 h-20 rounded-md overflow-hidden flex-shrink-0">
                       <img
-                        src={`http://localhost:5003/${item.productId.images[0]}`}
+                        src={`${api_url}/${item.productId.images[0]}`}
                         // src={item.productId.images[0]}
                         alt={item.productId.name}
                         className="w-full h-full object-cover"

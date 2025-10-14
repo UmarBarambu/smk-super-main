@@ -87,7 +87,7 @@ const PtaPayment = () => {
       return;
     }
 
-   const api_url = "http://localhost:5003/api";   // no1 problem fixed 
+   const api_url = import.meta.env.VITE_API_URL;
 
 
 

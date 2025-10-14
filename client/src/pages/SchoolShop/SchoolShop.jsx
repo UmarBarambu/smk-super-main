@@ -20,7 +20,7 @@ const SchoolShop = () => {
   const [isLoading, setIsLoading] = useState(true);
   
   const { user } = useContext(AuthContext);
-  const api_url = "http://localhost:5003/api";   // no2 problem fixed 
+  const api_url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   // Fetch products from API

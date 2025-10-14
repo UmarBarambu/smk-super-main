@@ -13,7 +13,7 @@ const MyOrders = () => {
 
   const { user, setUser } = useContext(AuthContext); // 👈 add setUser if available
   const navigate = useNavigate();
-  const api_url = "http://localhost:5003/api";
+  const api_url = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     if (!user) {

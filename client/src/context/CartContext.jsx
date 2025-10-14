@@ -53,7 +53,7 @@ export const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
   const [loading, setLoading] = useState(false);
 
-  const api_url = "http://localhost:5003/api"; // backend base url
+  const api_url = import.meta.env.VITE_API_URL;
 
   // Fetch cart from API
   const fetchCart = async () => {

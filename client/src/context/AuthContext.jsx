@@ -9,8 +9,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   console.log("User details: ", user)
-
-  const api_url = "http://localhost:5003/api";   // no3 problem fixed 
+  const api_url = import.meta.env.VITE_API_URL;
+   
 
   useEffect(() => {
     const token = localStorage.getItem("smk-user-token");
