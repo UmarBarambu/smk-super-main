@@ -11,6 +11,8 @@ const ProductCard = ({ product, onAddToCart }) => {
   const [loading, setLoading] = useState(false);
 
 const api_url = import.meta.env.VITE_API_URL;
+// Remove '/api' from the base URL for static assets (e.g., images)
+const API_BASE_URL_NO_API = api_url.replace(/\/api$/, "");
 
 
   const { user } = useContext(AuthContext);
@@ -40,7 +42,7 @@ const api_url = import.meta.env.VITE_API_URL;
       {/* ...rest of your UI code... */}
       <div className="relative h-48 overflow-hidden">
         <img
-          src={`${api_url}/${product.images[0]}` || "https://imgs.search.brave.com/UNPIHR5JzZzZPFWBnw3msiniRZ7Ue5qHX_7xX0eVRHc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9kLXN0/YXRpb25lcnktaWNv/bnMtc2Nob29sLW9m/ZmljZS1zdXBwbGll/cy1yZW5kZXItY2Fy/dG9vbi1zZXQtcGVu/LXBlbmNpbC1ydWxl/ci1lcmFzZXItaXNv/bGF0ZWQtYmx1ZS1i/YWNrZ3JvdW5kLWQt/Mzg3MzQzODYzLmpw/Zw"}
+          src={`${API_BASE_URL_NO_API}/${product.images[0]}` || "https://imgs.search.brave.com/UNPIHR5JzZzZPFWBnw3msiniRZ7Ue5qHX_7xX0eVRHc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9kLXN0/YXRpb25lcnktaWNv/bnMtc2Nob29sLW9m/ZmljZS1zdXBwbGll/cy1yZW5kZXItY2Fy/dG9vbi1zZXQtcGVu/LXBlbmNpbC1ydWxl/ci1lcmFzZXItaXNv/bGF0ZWQtYmx1ZS1i/YWNrZ3JvdW5kLWQt/Mzg3MzQzODYzLmpw/Zw"}
                     // src={product.images[0] || "https://imgs.search.brave.com/UNPIHR5JzZzZPFWBnw3msiniRZ7Ue5qHX_7xX0eVRHc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9kLXN0/YXRpb25lcnktaWNv/bnMtc2Nob29sLW9m/ZmljZS1zdXBwbGll/cy1yZW5kZXItY2Fy/dG9vbi1zZXQtcGVu/LXBlbmNpbC1ydWxl/ci1lcmFzZXItaXNv/bGF0ZWQtYmx1ZS1i/YWNrZ3JvdW5kLWQt/Mzg3MzQzODYzLmpw/Zw"}
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-500 transform-gpu"

@@ -5,6 +5,8 @@ import AdminOrderManagement from "./Orders";
 
 // API Base URL
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+// Remove '/api' from the base URL for static assets (e.g., images)
+const API_BASE_URL_NO_API = API_BASE_URL.replace(/\/api$/, "");
 
 // API Functions
 const api = {
@@ -405,7 +407,7 @@ function ProductTable({ products, onEdit, onDelete, onView }) {
                   <div className="flex-shrink-0 h-10 w-10">
                       {product.images && product.images.length > 0 ? (
                         <img
-                           src={`${API_BASE_URL}/${product.images[0]}`}
+                           src={`${API_BASE_URL_NO_API }/${product.images[0]}`}
                           // src={product.images[0]}
                           alt={product.name}
                           className="h-10 w-10 rounded-lg object-cover"

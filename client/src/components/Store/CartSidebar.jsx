@@ -6,6 +6,8 @@ import axios from "axios";
 
 
 const api_url = import.meta.env.VITE_API_URL;
+// Remove '/api' from the base URL for static assets (e.g., images)
+const API_BASE_URL_NO_API = api_url.replace(/\/api$/, "");
 
 
 const CartSidebar = ({ isOpen, setIsOpen }) => {
@@ -247,7 +249,7 @@ const removeFromCart = async (productId) => {
                     {/* Product Image */}
                     <div className="w-20 h-20 rounded-md overflow-hidden flex-shrink-0">
                       <img
-                        src={`${api_url}/${item.productId.images[0]}`}
+                        src={`${API_BASE_URL_NO_API}/${item.productId.images[0]}`}
                         // src={item.productId.images[0]}
                         alt={item.productId.name}
                         className="w-full h-full object-cover"
