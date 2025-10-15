@@ -10,7 +10,7 @@ const SchoolMomentsGallery = () => {
     {
       id: 1,
       image:
-        "https://scontent.fkul2-4.fna.fbcdn.net/v/t39.30808-6/487428857_1177759684142954_768391612597203681_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_ohc=WyIwmViV2w8Q7kNvwGS5CrO&_nc_oc=Adno_Nm8WTGZA_CpLXpjXyrj3KCXp93XunN5WEST8KVFFnVvO6c5-zgjCwojBbh09y79-aSSxnUDo9MTE2zMjgNL&_nc_zt=23&_nc_ht=scontent.fkul2-4.fna&_nc_gid=KOFb8uaAVkO8lfnC6Mrc7A&oh=00_AfYVMA2aM77Kj5Emk_91owfYo3gu6TFbsdYyizDIKgYZXg&oe=68E461BB",
+        "https://scontent.fkul2-4.fna.fbcdn.net/v/t39.30808-6/487428857_1177759684142954_768391612597203681_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_ohc=_KmWOOCtiaYQ7kNvwHFY8Sn&_nc_oc=Adn-xNaFdJ0Z2gSegwpGWDyJ74db0n6_xmnWEdQmsN18lueaIcTocZdWSC7rM9nGADZJG_pwjBzSgp5G3A0gxCjj&_nc_zt=23&_nc_ht=scontent.fkul2-4.fna&_nc_gid=qjHU73l5xv0DIJC-Lm1XrA&oh=00_AfdyPUdYH52LMrn_CoMeU1H6oMDGCUNvtCJyEGJYZkh2bQ&oe=68F514BB",
       title: "Annual Sports Day",
       description:
         "Students showcasing their athletic talents at our annual sports competition",
