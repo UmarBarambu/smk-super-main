@@ -39,10 +39,6 @@ const AdminPanel = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [allChats, setAllChats] = useState([]);
 
-
-
-
-
   useEffect(() => {
     setToken(localStorage.getItem("adminToken"));
 
@@ -108,7 +104,7 @@ const AdminPanel = () => {
     } catch (err) {
       toast.error(err.response?.data?.error || "Room add failed");
     } finally {
-      setLoading(false); // Hide loader
+      setLoading(false); 
     }
   };
 
