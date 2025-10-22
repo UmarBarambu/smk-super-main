@@ -469,7 +469,7 @@ const AdminPanel = () => {
 
   // 💬 Chat Popup
   const ChatPopup = () => (
-    <div className="fixed bottom-20 right-6 w-[800px] h-[800px] bg-white shadow-lg rounded-lg border flex">
+  <div className="fixed bottom-4 right-4 w-full max-w-[70vw] h-full max-h-[90vh] bg-white shadow-lg rounded-lg border flex">
       {/* Sidebar: User list */}
       <div className="w-1/3 border-r p-3 bg-gray-100 overflow-y-auto">
         <h3 className="font-semibold mb-2 flex items-center gap-2 text-blue-600">
