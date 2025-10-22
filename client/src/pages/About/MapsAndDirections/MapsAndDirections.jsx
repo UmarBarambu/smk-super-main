@@ -1,7 +1,8 @@
-// 
-
 import React from "react";
 import { MapPin, Phone, Mail, Clock, Bus, Car, Navigation } from "lucide-react";
+import building from "../../../assets/images/building.jpg";
+import payground from "../../../assets/images/payground.jpg";
+import gate from "../../../assets/images/gate.png";
 
 const MapsAndDirections = () => {
   return (
@@ -123,30 +124,39 @@ const MapsAndDirections = () => {
         </div>
 
         {/* Campus Gallery */}
-        <div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Campus Gallery</h2>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-              <img src="/api/placeholder/600/600" alt="School Main Building" className="w-full h-full object-cover" />
-            </div>
-            <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-              <img src="/api/placeholder/600/600" alt="School Entrance" className="w-full h-full object-cover" />
-            </div>
-            <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-              <img src="/api/placeholder/600/600" alt="Library" className="w-full h-full object-cover" />
-            </div>
-            <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-              <img src="/api/placeholder/600/600" alt="Sports Field" className="w-full h-full object-cover" />
-            </div>
-            <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-              <img src="/api/placeholder/600/600" alt="Science Lab" className="w-full h-full object-cover" />
-            </div>
-            <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-              <img src="/api/placeholder/600/600" alt="Cafeteria" className="w-full h-full object-cover" />
-            </div>
-          </div>
-        </div>
+    <div>
+  <h2 className="text-2xl font-bold text-gray-800 mb-6">Campus Gallery</h2>
+  
+  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+    {/* School Main Building */}
+    <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+      <img
+        src={building}
+        alt="School Main Building"
+        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+      />
+    </div>
+
+    {/* School Entrance Gate */}
+    <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+      <img
+        src={gate}
+        alt="School Entrance Gate"
+        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+      />
+    </div>
+
+    {/* School Playground */}
+    <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+      <img
+        src={payground}
+        alt="School Playground"
+        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+      />
+    </div>
+  </div>
+</div>
+
         
         {/* FAQ Section */}
         <div className="mt-16">

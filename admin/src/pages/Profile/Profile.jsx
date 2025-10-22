@@ -283,38 +283,6 @@ const Profile = () => {
             </div>
 
             {/* Role Field */}
-            <div className="flex items-start space-x-4">
-              <div className="flex-shrink-0 mt-1">
-                <Shield className="h-5 w-5 text-gray-400" />
-              </div>
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Role
-                </label>
-                {editMode ? (
-                  <select
-                    value={editedProfile.role}
-                    onChange={(e) => handleInputChange("role", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">Select a role</option>
-                    <option value="class_teacher">Class Teacher</option>
-                    <option value="regular_teacher">Regular Teacher</option>
-                    <option value="cooperation_store_admin">
-                      Cooperation Store Admin
-                    </option>
-                    <option value="school_admin">School Admin</option>
-                    <option value="room_supervisor">Room Supervisor</option>
-                    <option value="pta_treasurer">PTA Treasurer</option>
-                    <option value="principal">Principal</option>
-                  </select>
-                ) : (
-                  <p className="text-gray-900 py-2 capitalize">
-                    {profile.role}
-                  </p>
-                )}
-              </div>
-            </div>
 
             {/* Password Field */}
             <div className="flex items-start space-x-4">
