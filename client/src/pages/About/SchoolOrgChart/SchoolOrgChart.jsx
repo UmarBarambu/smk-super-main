@@ -268,30 +268,30 @@ const OrganizationalChart = () => {
               <Users className="w-6 h-6 text-blue-600" />
             </div>
             <div className="text-2xl font-bold text-gray-900">
-              {allMembers.length}
+             56
             </div>
-            <div className="text-gray-600">Total Staff</div>
+            <div className="text-gray-600">GURU</div>
           </div>
           <div className="bg-white rounded-xl p-6 text-center shadow-lg">
             <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
               <GraduationCap className="w-6 h-6 text-green-600" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">0</div>
-            <div className="text-gray-600">Departments</div>
+            <div className="text-2xl font-bold text-gray-900">9</div>
+            <div className="text-gray-600">Staff</div>
           </div>
           <div className="bg-white rounded-xl p-6 text-center shadow-lg">
             <div className="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
               <Award className="w-6 h-6 text-purple-600" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">0%</div>
-            <div className="text-gray-600">Advanced Degrees</div>
+            <div className="text-2xl font-bold text-gray-900">710</div>
+            <div className="text-gray-600">MURID</div>
           </div>
           <div className="bg-white rounded-xl p-6 text-center shadow-lg">
             <div className="bg-orange-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
               <Calendar className="w-6 h-6 text-orange-600" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">0</div>
-            <div className="text-gray-600">Avg. Years</div>
+            <div className="text-2xl font-bold text-gray-900">12</div>
+            <div className="text-gray-600">TAHUN</div>
           </div>
         </div>
       </div>
