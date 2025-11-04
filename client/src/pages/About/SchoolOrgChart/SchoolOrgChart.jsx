@@ -277,7 +277,7 @@ const OrganizationalChart = () => {
               <GraduationCap className="w-6 h-6 text-green-600" />
             </div>
             <div className="text-2xl font-bold text-gray-900">9</div>
-            <div className="text-gray-600">STaF</div>
+            <div className="text-gray-600">STAF</div>
           </div>
           <div className="bg-white rounded-xl p-6 text-center shadow-lg">
             <div className="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
