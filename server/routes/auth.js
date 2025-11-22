@@ -101,6 +101,34 @@ authRoutes.get("/profile", auth, async (req, res) => {
   }
 });
 
+// Update own profile (all authenticated users)
+authRoutes.put("/profile", auth, async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // If changing email, ensure uniqueness
+    if (email && email !== user.email) {
+      const exists = await User.findOne({ email });
+      if (exists) return res.status(400).json({ error: "Email already in use" });
+      user.email = email;
+    }
+
+    if (name) user.name = name;
+    if (password) user.password = await bcrypt.hash(password, 10);
+
+    await user.save();
+
+    res.status(200).json({ user: { name: user.name, email: user.email, role: user.role } });
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    if (err.name === "ValidationError") return res.status(400).json({ error: err.message });
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // Admin/Principal Profile
 authRoutes.get("/admin/profile", auth, roleCheck("principal", "school_admin"), async (req, res) => {
   try {
@@ -156,7 +184,16 @@ authRoutes.post("/admin/login", async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (!user || !["principal", "school_admin"].includes(user.role)) {
+    // Allow additional admin-type roles to access admin login
+    const allowedAdminRoles = [
+      "principal",
+      "school_admin",
+      "room_supervisor",
+      "pta_treasurer",
+      "store_admin",
+    ];
+
+    if (!user || !allowedAdminRoles.includes(user.role)) {
       return res.status(400).json({ error: "Invalid email or password" });
     }
 
@@ -215,7 +252,7 @@ authRoutes.post("/signup", async (req, res) => {
 });
 
 // 👑 Create Users (Admin/Principal only)
-authRoutes.post("/create-user", auth, roleCheck("principal"), async (req, res) => {
+authRoutes.post("/create-user", auth, roleCheck("principal", "school_admin"), async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
     const allowedRoles = [
@@ -226,11 +263,15 @@ authRoutes.post("/create-user", auth, roleCheck("principal"), async (req, res) =
       "room_supervisor",
       "pta_treasurer",
       "store_admin",
+      "pibg",
+      "rooms",
+      "shop",
     ];
 
     if (!allowedRoles.includes(role)) {
       return res.status(400).json({ error: "Invalid role assignment" });
     }
+
 
     if (await User.findOne({ email })) {
       return res.status(400).json({ error: "User already exists" });
@@ -242,10 +283,69 @@ authRoutes.post("/create-user", auth, roleCheck("principal"), async (req, res) =
 
     res.status(201).json({ message: "User created", user: newUser });
   } catch (err) {
+    console.error("Create user error:", err);
+    // Mongoose validation error (e.g., invalid enum)
+    if (err.name === "ValidationError") {
+      return res.status(400).json({ error: err.message });
+    }
+    // Duplicate key (email)
+    if (err.code && err.code === 11000) {
+      return res.status(400).json({ error: "Email already in use" });
+    }
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
+// 👀 Admin: Get all users (principal / school_admin)
+authRoutes.get(
+  "/admin/users",
+  auth,
+  roleCheck("principal", "school_admin"),
+  async (req, res) => {
+    try {
+      // Exclude principals from the admin user list per admin UI requirement
+      const users = await User.find({ role: { $ne: "principal" } })
+        .select("name email role createdAt")
+        .sort({ createdAt: -1 });
+      res.status(200).json({ users });
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
+
+// 🗑 Admin: Delete a user (principal / school_admin)
+authRoutes.delete(
+  "/admin/users/:id",
+  auth,
+  roleCheck("principal", "school_admin"),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      if (!id) return res.status(400).json({ error: "Missing user id" });
+
+      // Prevent admin from deleting themselves
+      if (req.user.id === id) {
+        return res.status(400).json({ error: "You cannot delete your own account" });
+      }
+
+      const user = await User.findById(id);
+      if (!user) return res.status(404).json({ error: "User not found" });
+
+      // Do not allow deleting users with role 'principal'
+      if (user.role === "principal") {
+        return res.status(403).json({ error: "Cannot delete user with role 'principal'" });
+      }
+
+      await User.deleteOne({ _id: id });
+      res.status(200).json({ message: "User deleted" });
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
 // 🚨 One-time Setup Superadmin
 authRoutes.post("/setup-superadmin", async (req, res) => {
   const { name, email, password, role, setupKey } = req.body;

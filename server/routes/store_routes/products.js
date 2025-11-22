@@ -73,6 +73,59 @@ productRoutes.get("/", async (req, res) => {
   }
 });
 
+// Admin: Get all products (including inactive) - Admin only
+productRoutes.get(
+  "/admin",
+  auth,
+  roleCheck("school_admin", "room_supervisor", "store_admin", "principal"),
+  async (req, res) => {
+    try {
+      console.log('Admin GET /products/admin called by user:', req.user && req.user._id ? { id: req.user._id, role: req.user.role } : 'unknown');
+      console.log('Query params:', req.query);
+      const {
+        category,
+        search,
+        featured,
+        page = 1,
+        limit = 12,
+        sortBy = "createdAt",
+        sortOrder = "desc",
+      } = req.query;
+
+      // Admin can see all products (no isActive filter)
+      const query = {};
+      if (category && category !== "all") query.category = category;
+      if (featured === "true") query.featured = true;
+      if (search) query.$text = { $search: search };
+
+      const skip = (Number.parseInt(page) - 1) * Number.parseInt(limit);
+      const sort = {};
+      sort[sortBy] = sortOrder === "desc" ? -1 : 1;
+
+      const products = await Product.find(query)
+        .sort(sort)
+        .skip(skip)
+        .limit(Number.parseInt(limit));
+
+      const total = await Product.countDocuments(query);
+
+      res.json({
+        products,
+        pagination: {
+          currentPage: Number.parseInt(page),
+          totalPages: Math.ceil(total / Number.parseInt(limit)),
+          totalProducts: total,
+          hasNext: skip + products.length < total,
+          hasPrev: Number.parseInt(page) > 1,
+        },
+      });
+    } catch (error) {
+      console.error("Get admin products error:", error, error.stack);
+      res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+  }
+);
+
 // Get single product by ID
 productRoutes.get("/:id", async (req, res) => {
   try {
@@ -84,6 +137,24 @@ productRoutes.get("/:id", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+// Admin: Get single product by ID (can return inactive) - Admin only
+productRoutes.get(
+  "/admin/:id",
+  auth,
+  roleCheck("school_admin", "room_supervisor", "store_admin", "principal"),
+  async (req, res) => {
+    try {
+      console.log('Admin GET /products/admin/:id called by user:', req.user && req.user._id ? { id: req.user._id, role: req.user.role } : 'unknown', 'params:', req.params);
+      const product = await Product.findById(req.params.id);
+      if (!product) return res.status(404).json({ message: "Product not found" });
+      res.json(product);
+    } catch (error) {
+      console.error("Get admin product error:", error, error.stack);
+      res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+  }
+);
 
 // Get product categories
 productRoutes.get("/meta/categories", async (req, res) => {
@@ -98,7 +169,7 @@ productRoutes.get("/meta/categories", async (req, res) => {
 productRoutes.post(
   "/",
   auth,
-  roleCheck("school_admin", "room_supervisor", "principal"),
+  roleCheck("school_admin", "room_supervisor", "store_admin", "principal"),
   upload.array("images", 5),
   async (req, res) => {
     try {
@@ -115,8 +186,8 @@ productRoutes.post(
 
       // ✅ Full URL images
       const images = req.files
-  ? req.files.map((file) => `product-images/${file.filename}`)
-  : [];
+        ? req.files.map((file) => `product-images/${file.filename}`)
+        : [];
 
 
       const product = new Product({
@@ -151,11 +222,12 @@ productRoutes.post(
 productRoutes.put(
   "/:id",
   auth,
-  roleCheck("school_admin", "room_supervisor", "principal"),
+  roleCheck("school_admin", "room_supervisor", "store_admin", "principal"),
   upload.array("images", 5),
   async (req, res) => {
     try {
       const { name, description, category, price, stock, sizes, featured, isActive } = req.body;
+      console.log('Admin PUT /products/:id body:', req.body);
       const product = await Product.findById(req.params.id);
       if (!product) return res.status(404).json({ message: "Product not found" });
 
@@ -168,7 +240,16 @@ productRoutes.put(
         product.sizes = Array.isArray(sizes) ? sizes : JSON.parse(sizes);
       }
       if (featured !== undefined) product.featured = featured === "true";
-      if (isActive !== undefined) product.isActive = isActive === "true";
+      if (isActive !== undefined) {
+        // Accept both boolean and string representations for isActive
+        if (typeof isActive === "boolean") {
+          product.isActive = isActive;
+        } else {
+          product.isActive = String(isActive) === "true";
+        }
+      }
+
+      console.log('Product isActive after assign (before save):', product.isActive);
 
       // ✅ Handle images
       if (req.files && req.files.length > 0) {
@@ -183,6 +264,7 @@ productRoutes.put(
       await product.save();
 
       // ✅ Return product with images so frontend can refresh immediately
+      console.log('Product saved:', product._id, 'isActive:', product.isActive);
       res.json({ message: "Product updated successfully", product });
     } catch (error) {
       console.error("Update product error:", error);
@@ -199,19 +281,47 @@ productRoutes.put(
 productRoutes.delete(
   "/:id",
   auth,
-  roleCheck("school_admin", "room_supervisor", "principal"),
+  roleCheck("school_admin", "room_supervisor", "store_admin", "principal"),
   async (req, res) => {
     try {
+      console.log('Admin DELETE /products/:id called by user:', req.user && req.user._id ? { id: req.user._id, role: req.user.role } : 'unknown', 'params:', req.params);
       const product = await Product.findById(req.params.id);
       if (!product) return res.status(404).json({ message: "Product not found" });
 
-      product.isActive = false;
-      await product.save();
+      // Capture image paths for background deletion
+      const imagesToDelete = Array.isArray(product.images) ? [...product.images] : [];
 
-      res.json({ message: "Product deleted successfully" });
+      // Permanently remove the product document from the database first
+      await Product.deleteOne({ _id: product._id });
+
+      // Attempt to delete image files in background; don't let file errors block response
+      (async () => {
+        if (imagesToDelete.length > 0) {
+          await Promise.allSettled(
+            imagesToDelete.map(async (img) => {
+              try {
+                // Only attempt to unlink relative product-images paths
+                const imgPath = path.join(process.cwd(), img);
+                if (fs.existsSync(imgPath)) {
+                  await fs.promises.unlink(imgPath);
+                  console.log('Deleted product image file:', imgPath);
+                } else {
+                  // log if file not found
+                  console.warn('Product image file not found (skip):', imgPath);
+                }
+              } catch (fsErr) {
+                console.warn('Failed to delete product image file:', img, fsErr.message);
+              }
+            })
+          );
+        }
+      })();
+
+      // Respond immediately that deletion succeeded
+      res.json({ message: "Product permanently deleted" });
     } catch (error) {
-      console.error("Delete product error:", error);
-      res.status(500).json({ message: "Internal server error" });
+      console.error("Delete product error:", error, error.stack);
+      res.status(500).json({ message: "Internal server error", error: error.message });
     }
   }
 );
@@ -220,7 +330,7 @@ productRoutes.delete(
 productRoutes.patch(
   "/:id/stock",
   auth,
-  roleCheck("school_admin", "room_supervisor", "principal"),
+  roleCheck("school_admin", "room_supervisor", "store_admin", "principal"),
   async (req, res) => {
     try {
       const { stock } = req.body;

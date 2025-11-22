@@ -41,11 +41,12 @@ const Profile = () => {
   }, []);
 
   const fetchProfile = async () => {
-    const api_url = import.meta.env.VITE_API_URL;
+    const api_url = import.meta.env.VITE_API_URL || "http://localhost:5002/api";
     const token = localStorage.getItem("adminToken");
     try {
       setLoading(true);
-      const response = await fetch(`${api_url}/auth/admin/profile`, {
+      // Use the general profile endpoint so any logged-in user can load their profile
+      const response = await fetch(`${api_url}/auth/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -81,7 +82,7 @@ const Profile = () => {
   };
 
   const handleSave = async () => {
-    const api_url = import.meta.env.VITE_API_URL;
+    const api_url = import.meta.env.VITE_API_URL || "http://localhost:5002/api";
     try {
       setSaving(true);
       setMessage({ type: "", text: "" });
@@ -105,14 +106,31 @@ const Profile = () => {
       }
 
       const token = localStorage.getItem("adminToken");
-      const response = await fetch(`${api_url}/auth/admin/profile`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(updateData),
-      });
+
+      // If the logged-in user is an admin (principal/school_admin) call the admin PUT
+      // otherwise call the general PUT /auth/profile which updates own profile without role changes
+      let response;
+      if (profile.role === "principal" || profile.role === "school_admin") {
+        response = await fetch(`${api_url}/auth/admin/profile`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updateData),
+        });
+      } else {
+        // Ensure role isn't sent for non-admin update
+        delete updateData.role;
+        response = await fetch(`${api_url}/auth/profile`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updateData),
+        });
+      }
 
       if (!response.ok) {
         throw new Error("Failed to update profile");
@@ -153,6 +171,7 @@ const Profile = () => {
   const clearMessage = () => {
     setMessage({ type: "", text: "" });
   };
+
 
   if (loading) {
     return (
@@ -405,6 +424,8 @@ const Profile = () => {
               </button>
             </div>
           )}
+
+          
         </div>
       </div>
     </div>
