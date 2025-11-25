@@ -229,7 +229,7 @@ authRoutes.post("/login", async (req, res) => {
 authRoutes.post("/signup", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
-    const allowedRoles = ["class_teacher", "regular_teacher", "jpn_ppd_individual"];
+    const allowedRoles = ["student", "parent", "class_teacher", "regular_teacher", "jpn_ppd_individual"];
     const userRole = role ? role.toLowerCase() : "student";
 
     if (!allowedRoles.includes(userRole)) {

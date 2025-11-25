@@ -19,6 +19,9 @@ export default function RoomBookingSystem() {
   const navigate = useNavigate();
   const [rooms, setRooms] = useState([]);
   const [myBookings, setMyBookings] = useState([]);
+  const [roomCalendar, setRoomCalendar] = useState([]); // availability grid for selected room
+  const [showDayModal, setShowDayModal] = useState(false);
+  const [modalDayData, setModalDayData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingFetchRooms, setLoadingFetchRooms] = useState(false);
   const [loadingBookings, setLoadingBookings] = useState(false);
@@ -34,6 +37,81 @@ export default function RoomBookingSystem() {
       fetchRooms();
     }
   }, [navigate]);
+
+  // Calendar month state (first day of month)
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    const d = new Date();
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+  });
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const formatDateLocal = (date) => {
+    const d = new Date(date);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
+  // Build month calendar (weeks) and fetch bookings for visible range
+  const loadMonthCalendar = async (monthDate, roomId) => {
+    if (!roomId) return;
+    try {
+      const year = monthDate.getFullYear();
+      const month = monthDate.getMonth();
+      const firstOfMonth = new Date(year, month, 1);
+      const startWeekDay = firstOfMonth.getDay(); // 0 (Sun) - 6
+      const firstCalendarDay = new Date(firstOfMonth);
+      firstCalendarDay.setDate(firstOfMonth.getDate() - startWeekDay);
+
+      const lastOfMonth = new Date(year, month + 1, 0);
+      const endWeekDay = lastOfMonth.getDay();
+      const lastCalendarDay = new Date(lastOfMonth);
+      lastCalendarDay.setDate(lastOfMonth.getDate() + (6 - endWeekDay));
+
+      const from = formatDateLocal(firstCalendarDay);
+      const to = formatDateLocal(lastCalendarDay);
+
+      const api_url = import.meta.env.VITE_API_URL;
+      const token = localStorage.getItem('smk-user-token');
+      const resp = await axios.get(`${api_url}/bookings/room/${roomId}?from=${from}&to=${to}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const bookings = resp.data || [];
+      const byDate = {};
+      bookings.forEach((b) => {
+        const d = formatDateLocal(b.date);
+        if (!byDate[d]) byDate[d] = [];
+        byDate[d].push(b);
+      });
+
+      // build days array from firstCalendarDay to lastCalendarDay
+      const days = [];
+      for (let d = new Date(firstCalendarDay); d <= lastCalendarDay; d.setDate(d.getDate() + 1)) {
+        const key = formatDateLocal(d);
+        const inMonth = d.getMonth() === month;
+        const dayBookings = (byDate[key] || []).map((b) => ({
+          start: b.startTime || (b.timeSlot ? parseSlotStart(b.timeSlot) : null),
+          end: b.endTime || (b.timeSlot ? parseSlotEnd(b.timeSlot) : null),
+          title: b.title,
+          attendees: b.attendees,
+          status: b.status,
+        }));
+        const availability = computeDayAvailability(dayBookings);
+        days.push({ date: key, displayDate: new Date(d).getDate(), inMonth, bookings: dayBookings, ...availability });
+      }
+
+      // group into weeks
+      const weeks = [];
+      for (let i = 0; i < days.length; i += 7) {
+        weeks.push(days.slice(i, i + 7));
+      }
+
+      setRoomCalendar(weeks);
+    } catch (err) {
+      console.error('Failed to load month calendar', err);
+    }
+  };
 
   const fetchRooms = async () => {
     try {
@@ -89,7 +167,8 @@ export default function RoomBookingSystem() {
   const [formData, setFormData] = useState({
     roomId: "",
     date: "",
-    timeSlot: "",
+    startTime: "",
+    endTime: "",
     attendees: "",
     pic: "",
     title: "",
@@ -111,13 +190,158 @@ export default function RoomBookingSystem() {
         attendees: "", // Reset attendees when room changes
       });
       setMaxAttendees(selectedRoom ? selectedRoom.capacity : 0); // Update max attendees
+      // fetch availability for this room (month view)
+      if (value) loadMonthCalendar(currentMonth, value);
     } else {
+      // If startTime changes and endTime is not after it, clear endTime
+      if (name === "startTime") {
+        if (formData.endTime) {
+          const [sh, sm] = value.split(":").map(Number);
+          const [eh, em] = formData.endTime.split(":").map(Number);
+          const startM = sh * 60 + sm;
+          const endM = eh * 60 + em;
+          if (endM <= startM) {
+            setFormData({
+              ...formData,
+              [name]: value,
+              endTime: "",
+            });
+            return;
+          }
+        }
+      }
+
       setFormData({
         ...formData,
         [name]: value,
       });
     }
   };
+
+  // Fetch bookings for selected room across next 35 days and build availability grid
+  const fetchRoomAvailability = async (roomId) => {
+    try {
+      const api_url = import.meta.env.VITE_API_URL;
+      const token = localStorage.getItem("smk-user-token");
+      const today = new Date();
+      const from = formatDateLocal(today);
+      const toDate = new Date(today);
+      toDate.setDate(toDate.getDate() + 34);
+      const to = formatDateLocal(toDate);
+
+      const resp = await axios.get(`${api_url}/bookings/room/${roomId}?from=${from}&to=${to}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const bookings = resp.data || [];
+      // group bookings by date
+      const byDate = {};
+      bookings.forEach((b) => {
+        const d = formatDateLocal(b.date);
+        if (!byDate[d]) byDate[d] = [];
+        byDate[d].push(b);
+      });
+
+      // build grid for next 35 days
+      const grid = [];
+      for (let i = 0; i < 35; i++) {
+        const dt = new Date();
+        dt.setDate(dt.getDate() + i);
+        const key = formatDateLocal(dt);
+        const dayBookings = (byDate[key] || []).map((b) => {
+          return {
+            start: b.startTime || (b.timeSlot ? parseSlotStart(b.timeSlot) : null),
+            end: b.endTime || (b.timeSlot ? parseSlotEnd(b.timeSlot) : null),
+            title: b.title,
+            attendees: b.attendees,
+            status: b.status,
+          };
+        });
+
+        const availability = computeDayAvailability(dayBookings);
+        grid.push({ date: key, displayDate: dt.getDate(), bookings: dayBookings, ...availability });
+      }
+      setRoomCalendar(grid);
+    } catch (err) {
+      console.error('Failed to fetch room availability', err);
+    }
+  };
+
+  const parseSlotStart = (slot) => {
+    const m = slot && slot.match(/From\s*(\d{2}:\d{2})/i);
+    return m ? m[1] : null;
+  };
+  const parseSlotEnd = (slot) => {
+    const m = slot && slot.match(/To\s*(\d{2}:\d{2})/i);
+    return m ? m[1] : null;
+  };
+
+  // Compute free slots between 08:00 and 22:00 given existing bookings (bookings have start/end strings)
+  const computeDayAvailability = (bookings) => {
+    const WINDOW_START = '08:00';
+    const WINDOW_END = '22:00';
+    // ignore rejected bookings — they don't occupy the slot
+    const activeBookings = (bookings || []).filter((b) => b.status !== 'rejected');
+    const toMinutes = (t) => { const [h,m]=t.split(':').map(Number); return h*60+m; };
+    const winStart = toMinutes(WINDOW_START);
+    const winEnd = toMinutes(WINDOW_END);
+
+    // if no bookings, entire window is free
+    if (!activeBookings || activeBookings.length === 0) {
+      return { isFull: false, freeSlots: [[WINDOW_START, WINDOW_END]] };
+    }
+
+    // map and sort intervals
+    const intervals = activeBookings.map(b => ({
+      start: b.start,
+      end: b.end,
+    })).filter(i => i.start && i.end).map(i => ({
+      s: toMinutes(i.start),
+      e: toMinutes(i.end),
+    })).sort((a,b)=>a.s-b.s);
+
+    // merge overlapping
+    const merged = [];
+    for (const it of intervals) {
+      if (!merged.length || it.s > merged[merged.length-1].e) merged.push({...it});
+      else merged[merged.length-1].e = Math.max(merged[merged.length-1].e, it.e);
+    }
+
+    // If merged intervals fully cover the window, mark as full
+    if (merged.length && merged[0].s <= winStart && merged[merged.length - 1].e >= winEnd) {
+      return { isFull: true, freeSlots: [] };
+    }
+
+    // compute gaps
+    const free = [];
+    let cursor = winStart;
+    for (const it of merged) {
+      if (it.s > cursor) {
+        free.push([minutesToClock(cursor), minutesToClock(it.s)]);
+      }
+      cursor = Math.max(cursor, it.e);
+    }
+    if (cursor < winEnd) free.push([minutesToClock(cursor), minutesToClock(winEnd)]);
+
+    // consider full if no free slot >= 30 minutes
+    const hasFree = free.some(([a,b]) => {
+      const am = toMinutes(a); const bm = toMinutes(b); return (bm - am) >= 30;
+    });
+
+    return { isFull: !hasFree, freeSlots: free };
+  };
+
+  const minutesToClock = (m) => {
+    const h = Math.floor(m/60); const mm = m%60; return `${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+  };
+
+  const openDayModal = (day) => {
+    // navigate to day view page
+    if (!formData.roomId) return;
+    navigate(`/committee/room-booking-system/room/${formData.roomId}/day/${day.date}`);
+  };
+
+  const closeDayModal = () => { setShowDayModal(false); setModalDayData(null); };
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -137,7 +361,8 @@ export default function RoomBookingSystem() {
     if (
       !formData.roomId ||
       !formData.date ||
-      !formData.timeSlot ||
+      !formData.startTime ||
+      !formData.endTime ||
       !formData.attendees ||
       !formData.pic ||
       !formData.title
@@ -146,18 +371,29 @@ export default function RoomBookingSystem() {
       return;
     }
 
+    // validate start/end times
+    const [sh, sm] = formData.startTime.split(":").map(Number);
+    const [eh, em] = formData.endTime.split(":").map(Number);
+    const startMinutes = sh * 60 + sm;
+    const endMinutes = eh * 60 + em;
+    if (endMinutes <= startMinutes) {
+      toast.error("End time must be after start time.");
+      return;
+    }
+
     try {
       const api_url = import.meta.env.VITE_API_URL;
       const token = localStorage.getItem("smk-user-token");
       setLoading(true);
 
-      // Send the booking data to the backend
+        // Send the booking data to the backend
       const response = await axios.post(
         `${api_url}/bookings`,
         {
           roomId: formData.roomId,
           date: formData.date,
-          timeSlot: formData.timeSlot,
+            startTime: formData.startTime,
+            endTime: formData.endTime,
           attendees: formData.attendees,
           pic: formData.pic,
           title: formData.title,
@@ -180,7 +416,8 @@ export default function RoomBookingSystem() {
         setFormData({
           roomId: "",
           date: "",
-          timeSlot: "",
+          startTime: "",
+          endTime: "",
           attendees: "",
         });
       }, 3000);
@@ -196,25 +433,35 @@ export default function RoomBookingSystem() {
     }
   };
 
-  // Time slot options
-  const timeSlots = [
-    "From 07:30 To 08:00",
-    "From 08:00 To 08:30",
-    "From 08:30 To 09:00",
-    "From 09:00 To 09:30",
-    "From 09:30 To 10:00",
-    "From 10:00 To 10:30",
-    "From 10:30 To 11:00",
-    "From 11:00 To 11:30",
-    "From 11:30 To 12:00",
-    "From 12:00 To 12:30",
-    "From 12:30 To 13:00",
-    "From 13:00 To 13:30",
-    "From 13:30 To 14:00",
-    "From 14:00 To 14:30",
-    "From 14:30 To 15:00",
-    "From 15:00 To 15:30",
-  ];
+  // Generate time options from 08:00 to 22:00 in 30-minute steps
+  const generateTimeOptions = (start = "08:00", end = "22:00", step = 30) => {
+    const opts = [];
+    const [sh, sm] = start.split(":").map(Number);
+    const [eh, em] = end.split(":").map(Number);
+    let cur = sh * 60 + sm;
+    const endMinutes = eh * 60 + em;
+    while (cur <= endMinutes) {
+      const h = Math.floor(cur / 60);
+      const m = cur % 60;
+      opts.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+      cur += step;
+    }
+    return opts;
+  };
+
+  const timeOptions = generateTimeOptions();
+  // Start options: remove 22:00 so users can't choose it as a start time
+  const startOptions = timeOptions.filter((t) => t !== "22:00");
+
+  // Compute end options so end time starts at 08:30 and is strictly after start time when selected
+  const MIN_END = "08:30";
+  const endOptions = timeOptions.filter((t) => {
+    if (formData.startTime) {
+      return t > formData.startTime;
+    }
+    // when no start selected, only show end times from 08:30 onwards
+    return t >= MIN_END;
+  });
 
   // Get status icon based on booking status
   const getStatusIcon = (status) => {
@@ -299,6 +546,52 @@ export default function RoomBookingSystem() {
               </div>
             ) : (
               <div>
+                {/* Calendar month availability for selected room */}
+                {formData.roomId && (
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-semibold">Availability — {currentMonth.toLocaleString('default', { month: 'long' })} {currentMonth.getFullYear()}</h3>
+                      <div className="space-x-2">
+                        <button onClick={() => { const prev = new Date(currentMonth); prev.setMonth(prev.getMonth() - 1); setCurrentMonth(prev); loadMonthCalendar(prev, formData.roomId); }} className="px-3 py-1 border rounded">Prev</button>
+                        <button onClick={() => { const next = new Date(currentMonth); next.setMonth(next.getMonth() + 1); setCurrentMonth(next); loadMonthCalendar(next, formData.roomId); }} className="px-3 py-1 border rounded">Next</button>
+                      </div>
+                    </div>
+
+                    <div className="mt-2">
+                      <div className="grid grid-cols-7">
+                        {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map((d) => (
+                          <div key={d} className="bg-[#6b2c1a] text-white text-sm font-semibold py-2 text-center border">{d}</div>
+                        ))}
+                      </div>
+
+                      <div className="grid grid-cols-7 gap-2 mt-2">
+                        {roomCalendar.map((week, wi) => (
+                          <div key={wi} className="col-span-7 grid grid-cols-7 gap-2">
+                            {week.map((day) => (
+                              <div
+                                key={day.date}
+                                onClick={() => { if (day.inMonth) { setSelectedDate(day.date); openDayModal(day); } }}
+                                className={`relative min-h-[110px] h-32 p-3 rounded border ${day.inMonth ? '' : 'opacity-50'} ${day.isFull ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'} ${selectedDate === day.date ? 'border-2 border-black' : ''}`}
+                              >
+                                <div className="absolute top-2 left-3 text-sm font-medium">{day.displayDate}</div>
+                                <div className="absolute bottom-3 right-3">
+                                  {day.inMonth ? (
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); openDayModal(day); }}
+                                      className={`text-xs px-3 py-1 rounded-full shadow-md ${day.isFull ? 'bg-red-500 text-white' : 'bg-green-600 text-white'}`}
+                                    >
+                                      {day.isFull ? 'Full' : 'View'}
+                                    </button>
+                                  ) : null}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Room Selection */}
                   <div className="space-y-2">
@@ -352,22 +645,39 @@ export default function RoomBookingSystem() {
                       className="text-sm font-medium text-gray-700 flex items-center"
                     >
                       <Clock size={16} className="mr-1 text-blue-600" />
-                      Time Slot
+                      Start Time / End Time
                     </label>
-                    <select
-                      id="timeSlot"
-                      name="timeSlot"
-                      value={formData.timeSlot}
-                      onChange={handleInputChange}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      <option value="">-- Select a Time Slot --</option>
-                      {timeSlots.map((slot, index) => (
-                        <option key={index} value={slot}>
-                          {slot}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="flex gap-2">
+                      <select
+                        id="startTime"
+                        name="startTime"
+                        value={formData.startTime}
+                        onChange={handleInputChange}
+                        className="w-1/2 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="">Start</option>
+                        {startOptions.map((t) => (
+                          <option key={t} value={t}>
+                            {t}
+                          </option>
+                        ))}
+                      </select>
+
+                      <select
+                        id="endTime"
+                        name="endTime"
+                        value={formData.endTime}
+                        onChange={handleInputChange}
+                        className="w-1/2 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="">End</option>
+                        {endOptions.map((t) => (
+                          <option key={t} value={t}>
+                            {t}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
                   {/* Number of Attendees */}
@@ -471,8 +781,8 @@ export default function RoomBookingSystem() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Date
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Time Slot
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Time
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Attendees
@@ -497,7 +807,9 @@ export default function RoomBookingSystem() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">
-                            {booking.timeSlot}
+                            {booking.startTime && booking.endTime
+                              ? `From ${booking.startTime} To ${booking.endTime}`
+                              : booking.timeSlot}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">

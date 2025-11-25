@@ -20,6 +20,7 @@ import { Testimonials } from "./components/Testimonials/Testimonials";
 // import { CallToAction } from "./components/CallToAction/CallToAction";
 import { Footer } from "./components/Footer/Footer";
 import RoomBookingSystem from "./pages/RoomBooking/RoomBooking";
+import DayView from "./pages/RoomBooking/DayView";
 import SignUp from "./pages/Auth/SignUp";
 import SignIn from "./pages/Auth/SignIn";
 import { UpcomingEvents } from "./pages/Home/UpcommingEvent/UpcomingEvents";
@@ -174,6 +175,7 @@ function App() {
               path="/committee/room-booking-system"
               element={<RoomBookingSystem />}
             />
+            <Route path="/committee/room-booking-system/room/:roomId/day/:date" element={<DayView />} />
             <Route path="/school-shop" element={<SchoolShop />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/my-orders" element={<MyOrders />} />

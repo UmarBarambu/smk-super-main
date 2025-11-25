@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { FaUser, FaTrash, FaComments } from "react-icons/fa";
+import { FaUser, FaTrash, FaComments, FaPrint } from "react-icons/fa";
 import logo from "../../assets/images/logo.png";
 import Sidebar from "../../components/Sidebar";
 import { useNavigate } from "react-router-dom";
@@ -198,6 +198,142 @@ const AdminPanel = () => {
     } finally {
       setLoading(false);
       setDeletingBookingId(null);
+    }
+  };
+
+  const handleBookingPrint = (b) => {
+    try {
+      const user = b.userId?.name || b.userId?.email || '';
+      const room = b.roomId?.name || '';
+      const date = new Date(b.date).toLocaleDateString();
+      const slot = b.timeSlot || (b.startTime && b.endTime ? `From ${b.startTime} To ${b.endTime}` : '');
+      const status = b.status || '';
+      const title = b.title || '';
+      const pic = b.pic || '';
+      const attendees = b.attendees || 0;
+
+      const html = `
+      <html>
+        <head>
+          <title>Booking ${b._id}</title>
+          <style>
+            body { font-family: Arial, Helvetica, sans-serif; padding: 20px; }
+            h2 { margin-bottom: 10px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { text-align: left; padding: 8px; border: 1px solid #ddd; }
+          </style>
+        </head>
+        <body>
+          <h2>Booking Details</h2>
+          <table>
+            <tr><th>User</th><td>${user}</td></tr>
+            <tr><th>Room</th><td>${room}</td></tr>
+            <tr><th>Title</th><td>${title}</td></tr>
+            <tr><th>PIC</th><td>${pic}</td></tr>
+            <tr><th>Date</th><td>${date}</td></tr>
+            <tr><th>Slot</th><td>${slot}</td></tr>
+            <tr><th>Status</th><td>${status}</td></tr>
+            <tr><th>Attendees</th><td>${attendees}</td></tr>
+          </table>
+        </body>
+      </html>
+      `;
+
+      const w = window.open('', '_blank');
+      if (!w) return toast.error('Unable to open print window (popup blocked)');
+      w.document.write(html);
+      w.document.close();
+      w.focus();
+      // give browser a moment to render then trigger print
+      setTimeout(() => {
+        w.print();
+        // keep window open so user can cancel or save; optionally close after printing
+        // setTimeout(() => w.close(), 500);
+      }, 250);
+    } catch (err) {
+      console.error('Print failed', err);
+      toast.error('Failed to open print window');
+    }
+  };
+
+  const handlePrintTable = () => {
+    try {
+      const rowsHtml = filteredBookings
+        .map((b) => {
+          const user = b.userId?.name || b.userId?.email || '';
+          const room = b.roomId?.name || '';
+          const date = new Date(b.date).toLocaleDateString();
+          const slot = formatBookingSlot(b) || '';
+          const status = b.status || '';
+          const title = (b.title || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          const pic = (b.pic || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          return `<tr>
+            <td style="padding:8px;border:1px solid #ddd">${user}</td>
+            <td style="padding:8px;border:1px solid #ddd">${room}</td>
+            <td style="padding:8px;border:1px solid #ddd">${title}</td>
+            <td style="padding:8px;border:1px solid #ddd">${pic}</td>
+            <td style="padding:8px;border:1px solid #ddd">${date}</td>
+            <td style="padding:8px;border:1px solid #ddd">${slot}</td>
+            <td style="padding:8px;border:1px solid #ddd">${status}</td>
+          </tr>`;
+        })
+        .join('');
+
+      const html = `
+      <html>
+        <head>
+          <title>All Bookings</title>
+          <meta name="viewport" content="width=device-width,initial-scale=1" />
+          <style>
+            @page { size: A4 landscape; margin: 15mm; }
+            body{font-family: Arial, Helvetica, sans-serif; padding:10px; color:#111}
+            h2{margin-bottom:12px; font-size:20px}
+            table{width:100%;border-collapse:collapse;table-layout:auto;}
+            thead th{background:#f3f4f6;text-align:left;padding:12px 10px;border:1px solid #ddd}
+            th,td{border:1px solid #ddd;padding:12px 10px;vertical-align:top}
+            td{white-space:normal}
+            /* give first columns a little more room */
+            th:nth-child(1), td:nth-child(1){min-width:140px}
+            th:nth-child(2), td:nth-child(2){min-width:180px}
+            th:nth-child(3), td:nth-child(3){min-width:200px}
+            /* print-friendly background */
+            @media print {
+              thead th { background: #f3f4f6 !important; -webkit-print-color-adjust: exact; }
+              body { margin: 0; }
+            }
+          </style>
+        </head>
+        <body>
+          <h2>All Bookings</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Room</th>
+                <th>Title</th>
+                <th>PIC</th>
+                <th>Date</th>
+                <th>Slot</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </body>
+      </html>
+      `;
+
+      const w = window.open('', '_blank');
+      if (!w) return toast.error('Unable to open print window (popup blocked)');
+      w.document.write(html);
+      w.document.close();
+      w.focus();
+      setTimeout(() => w.print(), 250);
+    } catch (err) {
+      console.error('Print table failed', err);
+      toast.error('Failed to open print window');
     }
   };
   // 🧩 Chat functions
@@ -714,6 +850,16 @@ const AdminPanel = () => {
     return b.roomId?.name === roomTypeFilter;
   });
 
+  const formatBookingSlot = (b) => {
+    // prefer legacy timeSlot string if present
+    if (b.timeSlot) return b.timeSlot;
+    // otherwise try startTime/endTime fields
+    const start = b.startTime || (b.timeSlot && (b.timeSlot.match(/From\s*(\d{2}:\d{2})/i)||[])[1]);
+    const end = b.endTime || (b.timeSlot && (b.timeSlot.match(/To\s*(\d{2}:\d{2})/i)||[])[1]);
+    if (start && end) return `From ${start} To ${end}`;
+    return b.timeSlot || "";
+  };
+
   return (
     <div className="flex h-screen">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -750,6 +896,12 @@ const AdminPanel = () => {
                     </option>
                   ))}
                 </select>
+                <button
+                  onClick={handlePrintTable}
+                  className="bg-blue-600 text-white px-3 py-1 rounded ml-4"
+                >
+                  Print Table
+                </button>
               </div>
               <div className="overflow-x-scroll">
                 <table className="w-full text-sm border">
@@ -773,7 +925,7 @@ const AdminPanel = () => {
                         <td>{b.title}</td>
                         <td>{b.pic}</td>
                         <td>{new Date(b.date).toLocaleDateString()}</td>
-                        <td>{b.timeSlot}</td>
+                        <td>{formatBookingSlot(b)}</td>
                         <td
                           className={`p-2 font-semibold ${b.status === "approved"
                             ? "bg-green-100 text-green-700"
@@ -801,14 +953,23 @@ const AdminPanel = () => {
                               </button>
                             </div>
                           )}
-                          <button
-                            onClick={() => handleBookingDelete(b._id)}
-                            disabled={deletingBookingId === b._id}
-                            className="mt-1 text-red-600 hover:text-red-800 text-lg p-1 rounded-full focus:outline-none"
-                            title={t("delete")}
-                          >
-                            <FaTrash />
-                          </button>
+                          <div className="flex items-center justify-center gap-2">
+                            <button
+                              onClick={() => handleBookingPrint(b)}
+                              className="text-gray-600 hover:text-gray-800 text-lg p-1 rounded-full focus:outline-none"
+                              title={t("print")}
+                            >
+                              <FaPrint />
+                            </button>
+                            <button
+                              onClick={() => handleBookingDelete(b._id)}
+                              disabled={deletingBookingId === b._id}
+                              className="mt-1 text-red-600 hover:text-red-800 text-lg p-1 rounded-full focus:outline-none"
+                              title={t("delete")}
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
