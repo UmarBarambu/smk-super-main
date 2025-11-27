@@ -33,6 +33,12 @@ const orderSchema = new mongoose.Schema(
     paymentNarration: {
       type: String,
     },
+    studentName: {
+      type: String,
+    },
+    className: {
+      type: String,
+    },
     userNote: {
       type: String,
     },

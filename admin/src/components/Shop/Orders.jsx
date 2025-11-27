@@ -76,8 +76,10 @@ const AdminOrderManagement = () => {
       setShowConfirmModal(false);
       setConfirmAction(null);
     } catch (err) {
-      setError(`Failed to ${action} order. Please try again.`);
-      console.error(`Error ${action}ing order:`, err);
+      // Prefer server-provided message when available
+      const serverMsg = err?.response?.data?.message || err?.message || `Failed to ${action} order.`;
+      setError(serverMsg);
+      console.error(`Error ${action}ing order:`, err?.response || err);
     }
   };
 
@@ -322,6 +324,20 @@ const isPDF = (filename) => /\.pdf$/i.test(filename);
                     <p className="flex items-center">
                       <Phone className="w-4 h-4 mr-2 text-gray-500" />
                       <span>{selectedOrder.phoneNumber}</span>
+                    </p>
+                    <p className="flex items-center">
+                      <span className="w-4 h-4 mr-2 text-gray-500" />
+                      <span className="text-sm text-gray-700">
+                        <span className="font-medium">Student:</span>{' '}
+                        {selectedOrder.studentName || 'Not provided'}
+                      </span>
+                    </p>
+                    <p className="flex items-center">
+                      <span className="w-4 h-4 mr-2 text-gray-500" />
+                      <span className="text-sm text-gray-700">
+                        <span className="font-medium">Class:</span>{' '}
+                        {selectedOrder.className || 'Not provided'}
+                      </span>
                     </p>
                   </div>
                 </div>

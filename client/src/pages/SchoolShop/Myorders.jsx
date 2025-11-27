@@ -518,6 +518,20 @@ const deleteMessage = async (messageId) => {
                       <Phone className="w-4 h-4 mr-2 text-gray-500" />{" "}
                       {selectedOrder.phoneNumber}
                     </p>
+                    <p className="flex items-center">
+                      <span className="w-4 h-4 mr-2 text-gray-500" />
+                      <span className="text-sm text-gray-700">
+                        <strong className="mr-2">Student:</strong>
+                        {selectedOrder.studentName || 'Not provided'}
+                      </span>
+                    </p>
+                    <p className="flex items-center">
+                      <span className="w-4 h-4 mr-2 text-gray-500" />
+                      <span className="text-sm text-gray-700">
+                        <strong className="mr-2">Class:</strong>
+                        {selectedOrder.className || 'Not provided'}
+                      </span>
+                    </p>
                   </div>
                 </div>
 

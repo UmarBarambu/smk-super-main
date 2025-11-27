@@ -25,7 +25,7 @@ const upload = multer({ storage });
 // @desc Create a new order
 orderRoutes.post("/", auth, upload.single("receiptImage"), async (req, res) => {
   try {
-    const { paymentNarration, userNote, phoneNumber } = req.body;
+    const { paymentNarration, userNote, phoneNumber, studentName, className } = req.body;
     const receiptImage = req.file ? `store-receipt/${req.file.filename}` : null;
 
     if (!receiptImage || !phoneNumber) {
@@ -68,6 +68,8 @@ orderRoutes.post("/", auth, upload.single("receiptImage"), async (req, res) => {
       receiptImage,
       paymentNarration,
       userNote,
+      studentName,
+      className,
     });
 
     // Optional: clear cart after placing order
@@ -154,7 +156,19 @@ orderRoutes.patch("/:id/approve", auth, async (req, res) => {
       return res.status(400).json({ message: "Order is already processed." });
     }
 
-    // 🔥 Decrement stock for each product in the order
+    // 🔥 Validate products and stock before decrementing
+    for (const item of order.cartItems) {
+      const product = await Product.findById(item.productId);
+      if (!product) {
+        return res.status(400).json({ message: `Product not found for item: ${item.productName}` });
+      }
+      // If stock field exists, ensure enough stock
+      if (typeof product.stock === 'number' && product.stock < item.quantity) {
+        return res.status(400).json({ message: `Insufficient stock for ${product.name || item.productName}` });
+      }
+    }
+
+    // All validations passed — decrement stock
     for (const item of order.cartItems) {
       await Product.findByIdAndUpdate(item.productId, {
         $inc: { stock: -item.quantity, sold: +item.quantity },

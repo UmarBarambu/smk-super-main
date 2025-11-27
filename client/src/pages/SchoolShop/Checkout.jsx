@@ -16,6 +16,12 @@ const Checkout = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [paymentProof, setPaymentProof] = useState(null);
   const [optionalMessage, setOptionalMessage] = useState("");
+  const [studentName, setStudentName] = useState(
+    user?.studentName || user?.student || ""
+  );
+  const [className, setClassName] = useState(
+    user?.className || user?.class || ""
+  );
 
   useEffect(() => {
     fetchCart();
@@ -118,6 +124,8 @@ const fetchCart = async () => {
       const formDataToSend = new FormData();
       formDataToSend.append("phoneNumber", phoneNumber);
       formDataToSend.append("paymentNarration", optionalMessage); // You can adjust this if you have a separate field
+      formDataToSend.append("studentName", studentName);
+      formDataToSend.append("className", className);
       formDataToSend.append("userNote", ""); // Add user note if you have it
       formDataToSend.append("receiptImage", paymentProof);
       // The server expects cart info from the DB, so just send the required fields
@@ -233,11 +241,39 @@ const fetchCart = async () => {
                     <input
                       type="tel"
                       required
-                      value={formData.customerInfo.phone}
+                      value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-900"
                       placeholder="Enter your phone number"
                     />
+                  </div>
+                  <div className="md:col-span-2">
+                    <div className="grid md:grid-cols-2 gap-4 mt-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Student
+                        </label>
+                        <input
+                          type="text"
+                          value={studentName}
+                          onChange={(e) => setStudentName(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-900"
+                          placeholder="Student's name (optional)"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Class name
+                        </label>
+                        <input
+                          type="text"
+                          value={className}
+                          onChange={(e) => setClassName(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-900"
+                          placeholder="E.g., Form 1 / Class A"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
