@@ -18,25 +18,46 @@ const SchoolShop = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const { user } = useContext(AuthContext);
   const api_url = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
-  // Fetch products from API
+  // Fetch products from API — re-run when selectedCategory or searchQuery changes
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`${api_url}/products`);
+
+        const params = {};
+        // When showing all products, ask server for more items (avoid pagination hiding some categories)
+        params.limit = selectedCategory === "all" ? 1000 : 12;
+        if (selectedCategory && selectedCategory !== "all") params.category = selectedCategory;
+        if (searchQuery) params.search = searchQuery;
+
+        const response = await axios.get(`${api_url}/products`, { params });
         setProducts(response.data.products || []);
         setFilteredProducts(response.data.products || []);
 
-        // Extract unique categories
-        const uniqueCategories = [
-          ...new Set(response.data.products.map((product) => product.category)),
-        ];
-        setCategories(uniqueCategories);
+        // Fetch categories meta from backend (returns distinct active categories)
+        try {
+          const catRes = await axios.get(`${api_url}/products/meta/categories`);
+          if (Array.isArray(catRes.data)) {
+            setCategories(catRes.data);
+          } else {
+            // Fallback to deriving from paginated products
+            const uniqueCategories = [
+              ...new Set((response.data.products || []).map((product) => product.category)),
+            ];
+            setCategories(uniqueCategories);
+          }
+        } catch (catErr) {
+          console.warn("Failed to fetch categories meta, falling back to page products:", catErr.message || catErr);
+          const uniqueCategories = [
+            ...new Set((response.data.products || []).map((product) => product.category)),
+          ];
+          setCategories(uniqueCategories);
+        }
 
         setIsLoading(false);
       } catch (error) {
@@ -46,7 +67,8 @@ const SchoolShop = () => {
     };
 
     fetchProducts();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategory, searchQuery]);
 
   // // Fetch cart from API when user logs in or on mount
   // useEffect(() => {
@@ -97,126 +119,126 @@ const SchoolShop = () => {
     setFilteredProducts(result);
   }, [selectedCategory, searchQuery, products]);
 
-// Fetch cart from API when user logs in or on mount
-useEffect(() => {
-  const fetchCart = async () => {
+  // Fetch cart from API when user logs in or on mount
+  useEffect(() => {
+    const fetchCart = async () => {
+      if (!user) {
+        setCart([]);
+        return;
+      }
+      try {
+        const token = localStorage.getItem("smk-user-token"); // ✅ fixed key
+        const response = await axios.get(`${api_url}/cart`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log("Cart response:", response.data);
+        setCart(response.data.cart || []); // ✅ consistent
+      } catch (err) {
+        console.error("Error fetching cart:", err);
+        setCart([]);
+      }
+    };
+
+    fetchCart();
+  }, [user]);
+
+  // Add to cart function (API integrated)
+  const onAddToCart = async ({ product, selectedSize }) => {
     if (!user) {
-      setCart([]);
-      return;
+      setIsCartOpen(false);
+      return false; // Let ProductCard handle redirect
     }
-    try {
-      const token = localStorage.getItem("smk-user-token"); // ✅ fixed key
-      const response = await axios.get(`${api_url}/cart`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log("Cart response:", response.data);
-      setCart(response.data.cart || []); // ✅ consistent
-    } catch (err) {
-      console.error("Error fetching cart:", err);
-      setCart([]);
-    }
-  };
 
-  fetchCart();
-}, [user]);
-
-// Add to cart function (API integrated)
-const onAddToCart = async ({ product, selectedSize }) => {
-  if (!user) {
-    setIsCartOpen(false);
-    return false; // Let ProductCard handle redirect
-  }
-
-  // 🔥 Check stock before adding
-  if (!product.stock || product.stock <= 0) {
-    alert(`${product.name} is out of stock`);
-    return false;
-  }
-
-  try {
-    const token = localStorage.getItem("smk-user-token");
-
-    // Check if product already in cart
-    const existingItem = cart.find(
-      (item) =>
-        item.productId._id === product._id &&
-        item.size === selectedSize
-    );
-
-    // Quantity to add (default 1)
-    const newQuantity = existingItem ? existingItem.quantity + 1 : 1;
-
-    // 🚨 Prevent adding more than stock
-    if (newQuantity > product.stock) {
-      alert(`Only ${product.stock} left in stock for ${product.name}`);
+    // 🔥 Check stock before adding
+    if (!product.stock || product.stock <= 0) {
+      alert(`${product.name} is out of stock`);
       return false;
     }
 
-    // Add/update in cart
-    await axios.post(
-      `${api_url}/cart`,
-      {
-        productId: product._id,
-        quantity: 1, // always add 1 per click
-        size: selectedSize,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
+    try {
+      const token = localStorage.getItem("smk-user-token");
+
+      // Check if product already in cart
+      const existingItem = cart.find(
+        (item) =>
+          item.productId._id === product._id &&
+          item.size === selectedSize
+      );
+
+      // Quantity to add (default 1)
+      const newQuantity = existingItem ? existingItem.quantity + 1 : 1;
+
+      // 🚨 Prevent adding more than stock
+      if (newQuantity > product.stock) {
+        alert(`Only ${product.stock} left in stock for ${product.name}`);
+        return false;
       }
-    );
 
-    // Fetch updated cart
-    const response = await axios.get(`${api_url}/cart`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+      // Add/update in cart
+      await axios.post(
+        `${api_url}/cart`,
+        {
+          productId: product._id,
+          quantity: 1, // always add 1 per click
+          size: selectedSize,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-    setCart(response.data.cart || []);
-    setIsCartOpen(true);
-    return true;
-  } catch (error) {
-    console.error("Error adding product to cart:", error);
-    return false;
-  }
-};
+      // Fetch updated cart
+      const response = await axios.get(`${api_url}/cart`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setCart(response.data.cart || []);
+      setIsCartOpen(true);
+      return true;
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+      return false;
+    }
+  };
 
 
-// // Add to cart function (API integrated)
-// const onAddToCart = async ({ product, selectedSize }) => {
-//   if (!user) {
-//     setIsCartOpen(false);
-//     return false; // Let ProductCard handle redirect
-//   }
-//   try {
-//     const token = localStorage.getItem("smk-user-token"); // ✅ fixed key
-//     await axios.post(
-//       `${api_url}/cart`,
-//       {
-//         productId: product._id,
-//         quantity: 1,
-//         size: selectedSize,
-//       },
-//       {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       }
-//     );
-//     // Fetch updated cart
-//     const response = await axios.get(`${api_url}/cart`, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-//     setCart(response.data.cart || []); // ✅ consistent
-//     setIsCartOpen(true);
-//     return true;
-//   } catch (error) {
-//     console.error("Error adding product to cart:", error);
-//     return false;
-//   }
-// };
+  // // Add to cart function (API integrated)
+  // const onAddToCart = async ({ product, selectedSize }) => {
+  //   if (!user) {
+  //     setIsCartOpen(false);
+  //     return false; // Let ProductCard handle redirect
+  //   }
+  //   try {
+  //     const token = localStorage.getItem("smk-user-token"); // ✅ fixed key
+  //     await axios.post(
+  //       `${api_url}/cart`,
+  //       {
+  //         productId: product._id,
+  //         quantity: 1,
+  //         size: selectedSize,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     // Fetch updated cart
+  //     const response = await axios.get(`${api_url}/cart`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     setCart(response.data.cart || []); // ✅ consistent
+  //     setIsCartOpen(true);
+  //     return true;
+  //   } catch (error) {
+  //     console.error("Error adding product to cart:", error);
+  //     return false;
+  //   }
+  // };
 
 
 
@@ -258,86 +280,87 @@ const onAddToCart = async ({ product, selectedSize }) => {
 
 
   // Remove from cart function (API integrated)
-const removeFromCart = async (productId, size) => {
-  if (!user) return;
-  try {
-    const token = localStorage.getItem("smk-user-token"); // ✅ fixed
-    await axios.delete(`${api_url}/cart`, {
-      headers: { Authorization: `Bearer ${token}` },
-      data: { productId, size },
-    });
-    // Fetch updated cart
-    const response = await axios.get(`${api_url}/cart`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setCart(response.data.cart || []);
-  } catch (error) {
-    console.error("Error removing from cart:", error);
-  }
-};
+  const removeFromCart = async (productId, size) => {
+    if (!user) return;
+    try {
+      const token = localStorage.getItem("smk-user-token"); // ✅ fixed
+      await axios.delete(`${api_url}/cart`, {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { productId, size },
+      });
+      // Fetch updated cart
+      const response = await axios.get(`${api_url}/cart`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCart(response.data.cart || []);
+    } catch (error) {
+      console.error("Error removing from cart:", error);
+    }
+  };
 
-// Update cart item quantity (API integrated)
-const updateQuantity = async (productId, size, newQuantity) => {
-  if (!user) return;
-  if (newQuantity < 1) {
-    removeFromCart(productId, size);
-    return;
-  }
-  try {
-    const token = localStorage.getItem("smk-user-token"); // ✅ fixed
-    await axios.put(
-      `${api_url}/cart`,
-      { productId, size, quantity: newQuantity },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    // Fetch updated cart
-    const response = await axios.get(`${api_url}/cart`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setCart(response.data.cart || []);
-  } catch (error) {
-    console.error("Error updating cart quantity:", error);
-  }
-};
+  // Update cart item quantity (API integrated)
+  const updateQuantity = async (productId, size, newQuantity) => {
+    if (!user) return;
+    if (newQuantity < 1) {
+      removeFromCart(productId, size);
+      return;
+    }
+    try {
+      const token = localStorage.getItem("smk-user-token"); // ✅ fixed
+      await axios.put(
+        `${api_url}/cart`,
+        { productId, size, quantity: newQuantity },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // Fetch updated cart
+      const response = await axios.get(`${api_url}/cart`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCart(response.data.cart || []);
+    } catch (error) {
+      console.error("Error updating cart quantity:", error);
+    }
+  };
 
-// Deduplicate by product name when "All Products" is selected
-const visibleProducts = (selectedCategory === "all"
-  ? Array.from(
+  // Deduplicate by product name when "All Products" is selected
+  const visibleProducts = (selectedCategory === "all"
+    ? Array.from(
       new Map(
         products.map((p) => [p.name.toLowerCase(), p]) // key = name
       ).values()
     )
-  : products
-).filter((product) => {
-  const matchesCategory =
-    selectedCategory === "all" || product.category === selectedCategory;
+    : products
+  ).filter((product) => {
+    const matchesCategory =
+      selectedCategory === "all" || product.category === selectedCategory;
 
-  const matchesSearch =
-    !searchQuery ||
-    product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch =
+      !searchQuery ||
+      product.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-  return matchesCategory && matchesSearch;
-});
+    return matchesCategory && matchesSearch;
+  });
 
 
-// Fixed order list
-const orderedCategories = [
-  "Form 1",
-  "Form 2",
-  "Form 3",
-  "Form 4",
-  "Form 5",
-  "Uniforms",
-  "Books",
-  "Accessories",
-  "Supplies",
-  "Others"
-];
+  // Fixed order list
+  const orderedCategories = [
+    "Form 1",
+    "Form 2",
+    "Form 3",
+    "Form 4",
+    "Form 5",
+    "Uniforms",
+    "PPKI",
+    "Books",
+    "Accessories",
+    "Supplies",
+    "Others"
+  ];
 
-// Intersect DB categories with fixed order
-const sortedCategories = orderedCategories.filter(cat =>
-  categories.includes(cat)
-);
+  // Intersect DB categories with fixed order
+  const sortedCategories = orderedCategories.filter(cat =>
+    categories.includes(cat)
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -365,19 +388,19 @@ const sortedCategories = orderedCategories.filter(cat =>
                 >
                   Browse Products
                 </button> */}
-<button
-  onClick={() => {
+                <button
+                  onClick={() => {
                     const token = localStorage.getItem("smk-user-token");
                     if (!token) {
                       navigate("/signin");
                       return;
                     }
-    navigate("/my-orders"); // ✅ Go to user's orders if logged in
-  }}
-  className="bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold py-3 px-6 rounded-lg transition duration-300"
->
-  My Purchase
-</button>
+                    navigate("/my-orders"); // ✅ Go to user's orders if logged in
+                  }}
+                  className="bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold py-3 px-6 rounded-lg transition duration-300"
+                >
+                  My Purchase
+                </button>
 
                 <button
                   onClick={() => {
@@ -410,7 +433,7 @@ const sortedCategories = orderedCategories.filter(cat =>
               <h2 className="text-xl font-bold text-blue-900 mb-4">
                 Categories
               </h2>
-             <CategoryFilter
+              <CategoryFilter
                 categories={sortedCategories}
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
@@ -480,14 +503,14 @@ const sortedCategories = orderedCategories.filter(cat =>
                     onAddToCart={onAddToCart}
                   />
                 ))} */
-                visibleProducts.map((product) => (
-  <ProductCard
-    key={product._id}
-    product={product}
-    onAddToCart={onAddToCart}
-  />
-))
-}
+                  visibleProducts.map((product) => (
+                    <ProductCard
+                      key={product._id}
+                      product={product}
+                      onAddToCart={onAddToCart}
+                    />
+                  ))
+                }
               </div>
             )}
           </div>
@@ -503,10 +526,10 @@ const sortedCategories = orderedCategories.filter(cat =>
         removeFromCart={removeFromCart}
       />
     </div>
-    
+
 
   );
-  
+
 };
 
 export default SchoolShop;

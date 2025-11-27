@@ -106,7 +106,7 @@ const api = {
   },
 };
 
-const categories = ["Uniforms", "Books", "Accessories", "Others", "Form 1", "Form 2", "Form 3", "Form 4", "Form 5"];
+const categories = ["PPKI","Uniforms", "Books", "Accessories", "Others", "Form 1", "Form 2", "Form 3", "Form 4", "Form 5"];
 
 function ProductForm({ product, onSave, onCancel, isLoading }) {
   const [formData, setFormData] = useState({
