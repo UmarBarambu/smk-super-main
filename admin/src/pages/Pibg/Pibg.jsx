@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { formatBookingDate } from "../../utils/formatDate";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -8,6 +9,7 @@ const Pibg = () => {
   const [updatingId, setUpdatingId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
   const [classFilter, setClassFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState("");
 
   const rawApiUrl = import.meta.env.VITE_API_URL;
   const baseUrl = rawApiUrl.replace(/\/api\/?$/, "");
@@ -98,18 +100,35 @@ const Pibg = () => {
     { value: "ZUHAL", label: "ZUHAL" },
   ];
 
-  const sortedPayments = [...payments].sort((a, b) => {
-    const aIdx = classOrder.indexOf(a.class);
-    const bIdx = classOrder.indexOf(b.class);
-    if (aIdx === -1 && bIdx === -1) return 0;
-    if (aIdx === -1) return 1;
-    if (bIdx === -1) return -1;
-    return aIdx - bIdx;
-  });
+  const sortedPayments = (() => {
+    // When showing all classes, sort by newest payment first
+    if (classFilter === "all") {
+      return [...payments].sort((a, b) => {
+        const aTs = new Date(a.createdAt || a.date).getTime() || 0;
+        const bTs = new Date(b.createdAt || b.date).getTime() || 0;
+        return bTs - aTs;
+      });
+    }
+
+    // Otherwise keep the class grouping order
+    return [...payments].sort((a, b) => {
+      const aIdx = classOrder.indexOf(a.class);
+      const bIdx = classOrder.indexOf(b.class);
+      if (aIdx === -1 && bIdx === -1) return 0;
+      if (aIdx === -1) return 1;
+      if (bIdx === -1) return -1;
+      return aIdx - bIdx;
+    });
+  })();
 
   const filteredPayments = sortedPayments.filter(p => {
-    if (classFilter === "all") return true;
-    return p.class === classFilter;
+    if (classFilter !== "all" && p.class !== classFilter) return false;
+    if (dateFilter) {
+      // compare using ISO YYYY-MM-DD from the payment date
+      const pIso = new Date(p.date).toISOString().slice(0, 10);
+      if (pIso !== dateFilter) return false;
+    }
+    return true;
   });
 
   return (
@@ -128,6 +147,14 @@ const Pibg = () => {
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
+          <label htmlFor="dateFilter" className="font-medium text-gray-700">Date:</label>
+          <input
+            id="dateFilter"
+            type="date"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="border px-2 py-1 rounded"
+          />
           <button
             onClick={downloadReport}
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
@@ -177,7 +204,7 @@ const Pibg = () => {
                     {p.amount}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {new Date(p.date).toLocaleDateString()}
+                    {formatBookingDate(p.date)}
                   </td>
                   <td className="px-4 py-2 border capitalize text-center mx-auto">
                     {p.status || "pending"}

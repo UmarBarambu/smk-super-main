@@ -9,8 +9,7 @@ const UserSchema = new mongoose.Schema(
       enum: [
         'student',
         'parent',
-        'class_teacher',
-        'regular_teacher',
+        'teacher',
         'store_admin',
         'pibg',
         'rooms',

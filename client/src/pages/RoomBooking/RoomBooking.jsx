@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { formatBookingDate } from "../../utils/formatDate";
 import {
   Calendar,
   Clock,
@@ -801,8 +802,8 @@ export default function RoomBookingSystem() {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
-                            {new Date(booking.date).toLocaleDateString()}
+                            <div className="text-sm text-gray-900">
+                            {formatBookingDate(booking.date)}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">

@@ -8,7 +8,7 @@ const Users = () => {
   const [loading, setLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newUser, setNewUser] = useState({ name: "", email: "", password: "", role: "class_teacher" });
+  const [newUser, setNewUser] = useState({ name: "", email: "", password: "", role: "" });
 
   const token = localStorage.getItem("adminToken");
 
@@ -67,7 +67,7 @@ const Users = () => {
       // prepend created user to list
       setUsers((prev) => [res.data.user, ...prev]);
       setShowAddModal(false);
-      setNewUser({ name: "", email: "", password: "", role: "class_teacher" });
+      setNewUser({ name: "", email: "", password: "", role: "" });
     } catch (err) {
       console.error("Create user failed:", err);
       const msg = err.response?.data?.error || err.message || "Failed to create user";
@@ -226,6 +226,7 @@ const Users = () => {
                   value={newUser.role}
                   onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
                 >
+                  <option value="">-- Select role --</option>
                   {roleOptions.map((r) => (
                     <option key={r} value={r}>
                       {r}

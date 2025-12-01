@@ -13,6 +13,7 @@ import Users from "../Users/Users";
 import { useTranslation } from "react-i18next";
 import TextareaAutosize from "react-textarea-autosize";
 import { io } from "socket.io-client";
+import { formatBookingDate } from "../../utils/formatDate";
 
 
 
@@ -205,7 +206,7 @@ const AdminPanel = () => {
     try {
       const user = b.userId?.name || b.userId?.email || '';
       const room = b.roomId?.name || '';
-      const date = new Date(b.date).toLocaleDateString();
+      const date = formatBookingDate(b.date);
       const slot = b.timeSlot || (b.startTime && b.endTime ? `From ${b.startTime} To ${b.endTime}` : '');
       const status = b.status || '';
       const title = b.title || '';
@@ -262,7 +263,7 @@ const AdminPanel = () => {
         .map((b) => {
           const user = b.userId?.name || b.userId?.email || '';
           const room = b.roomId?.name || '';
-          const date = new Date(b.date).toLocaleDateString();
+          const date = formatBookingDate(b.date);
           const slot = formatBookingSlot(b) || '';
           const status = b.status || '';
           const title = (b.title || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -845,10 +846,30 @@ const AdminPanel = () => {
   ];
 
   // Filtered bookings
-  const filteredBookings = bookings.filter((b) => {
-    if (roomTypeFilter === "all") return true;
-    return b.roomId?.name === roomTypeFilter;
-  });
+  const getBookingTimestamp = (b) => {
+    // Use createdAt as primary sort key (newest first). Fall back to updatedAt then 0.
+    try {
+      if (b.createdAt) {
+        const t = new Date(b.createdAt).getTime();
+        if (!isNaN(t)) return t;
+      }
+      if (b.updatedAt) {
+        const t = new Date(b.updatedAt).getTime();
+        if (!isNaN(t)) return t;
+      }
+    } catch {
+      // ignore
+    }
+    return 0;
+  };
+
+  const filteredBookings = bookings
+    .filter((b) => {
+      if (roomTypeFilter === "all") return true;
+      return b.roomId?.name === roomTypeFilter;
+    })
+    .map((b) => ({ ...b, _sortTs: getBookingTimestamp(b) }))
+    .sort((a, b) => b._sortTs - a._sortTs);
 
   const formatBookingSlot = (b) => {
     // prefer legacy timeSlot string if present
@@ -859,6 +880,8 @@ const AdminPanel = () => {
     if (start && end) return `From ${start} To ${end}`;
     return b.timeSlot || "";
   };
+
+  
 
   return (
     <div className="flex h-screen">
@@ -924,7 +947,7 @@ const AdminPanel = () => {
                         <td>{b.roomId?.name}</td>
                         <td>{b.title}</td>
                         <td>{b.pic}</td>
-                        <td>{new Date(b.date).toLocaleDateString()}</td>
+                        <td>{formatBookingDate(b.date)}</td>
                         <td>{formatBookingSlot(b)}</td>
                         <td
                           className={`p-2 font-semibold ${b.status === "approved"

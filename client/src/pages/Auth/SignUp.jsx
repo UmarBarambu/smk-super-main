@@ -22,8 +22,7 @@ export default function SignUp() {
     { value: "", label: "Select User Type" },
     { value: "student", label: "Student" },
     { value: "parent", label: "Parent" },
-    { value: "class_teacher", label: "Class_Teacher" },
-    { value: "regular_teacher", label: "Regular_Teacher" },
+    { value: "teacher", label: "Teacher" },
     { value: "jpn_ppd_individual", label: "JPN_PPD_Individual" },
     
   ];

@@ -9,7 +9,7 @@ const bookingRoutes = express.Router();
 bookingRoutes.post(
   '/',
   auth,
-  roleCheck('student', 'class_teacher', 'regular_teacher'),
+  roleCheck('student', 'teacher'),
   async (req, res) => {
       try {
         const { roomId, date, timeSlot, startTime, endTime, attendees, isSpecial, pic, title } = req.body;

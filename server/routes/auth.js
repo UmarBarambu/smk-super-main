@@ -148,8 +148,7 @@ authRoutes.put("/admin/profile", auth, roleCheck("principal", "school_admin"), a
     const allowedRoles = [
       "school_admin",
       "principal",
-      "class_teacher",
-      "regular_teacher",
+      "teacher",
       "room_supervisor",
       "pta_treasurer",
       "store_admin",
@@ -229,7 +228,7 @@ authRoutes.post("/login", async (req, res) => {
 authRoutes.post("/signup", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
-    const allowedRoles = ["student", "parent", "class_teacher", "regular_teacher", "jpn_ppd_individual"];
+    const allowedRoles = ["student", "parent", "teacher", "jpn_ppd_individual"];
     const userRole = role ? role.toLowerCase() : "student";
 
     if (!allowedRoles.includes(userRole)) {
@@ -258,8 +257,7 @@ authRoutes.post("/create-user", auth, roleCheck("principal", "school_admin"), as
     const allowedRoles = [
       "school_admin",
       "principal",
-      "class_teacher",
-      "regular_teacher",
+      "teacher",
       "room_supervisor",
       "pta_treasurer",
       "store_admin",

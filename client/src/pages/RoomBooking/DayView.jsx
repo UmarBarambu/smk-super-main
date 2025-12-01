@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { formatBookingDate } from "../../utils/formatDate";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -77,7 +78,7 @@ export default function DayView() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-xl font-semibold">Room: {room?.name || roomId}</h2>
-          <p className="text-sm text-gray-600">Date: {new Date(date).toLocaleDateString()}</p>
+          <p className="text-sm text-gray-600">Date: {formatBookingDate(date)}</p>
         </div>
         <div>
           <button onClick={() => navigate(-1)} className="px-3 py-1 border rounded">Back</button>
