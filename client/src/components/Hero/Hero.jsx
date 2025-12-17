@@ -68,7 +68,7 @@ const Hero = ({ data }) => {
             {/* {heroSection.title} */}
             {data.title}
             <span className="bg-gradient-to-r from-yellow-400 via-white to-blue-500 bg-clip-text text-transparent animate-pulse drop-shadow-lg tracking-widest">
-              SMK SURIA PERDANA
+              SMK 
             </span>
           </h1>
           <p className="text-base md:text-xl mb-10 max-w-3xl">
