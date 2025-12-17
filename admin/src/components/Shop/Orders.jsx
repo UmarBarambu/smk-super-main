@@ -50,11 +50,15 @@ const AdminOrderManagement = () => {
     }
 
     if (searchTerm) {
-      filtered = filtered.filter(order => 
-        order.user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order._id.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(order => {
+        const { name, email } = getOrderCustomerInfo(order);
+        return (
+          email.toLowerCase().includes(term) ||
+          name.toLowerCase().includes(term) ||
+          (order._id || '').toLowerCase().includes(term)
+        );
+      });
     }
 
     setFilteredOrders(filtered);
@@ -159,6 +163,15 @@ const getReceiptUrl = (filename) => {
 const isImage = (filename) => /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(filename);
 const isPDF = (filename) => /\.pdf$/i.test(filename);
 
+  // Safely extract customer name/email regardless of missing user object
+  const getOrderCustomerInfo = (order) => {
+    const name = order?.user?.fullName || order?.user?.name || order?.fullName || 'Unknown customer';
+    const email = order?.user?.email || order?.email || '';
+    return { name, email };
+  };
+
+  const selectedCustomer = selectedOrder ? getOrderCustomerInfo(selectedOrder) : null;
+
   return (
     <div className=" w-[100%]">
 
@@ -217,61 +230,64 @@ const isPDF = (filename) => /\.pdf$/i.test(filename);
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredOrders.map((order) => (
-                  <tr key={order._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {order._id}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{order.user.fullName}</div>
-                      <div className="text-sm text-gray-500">{order.user.email}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {order.cartItems.length} item(s)
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {formatCurrency(order.totalAmount)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                        {getStatusIcon(order.status)}
-                        <span className="ml-1 capitalize">{order.status}</span>
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatDate(order.createdAt)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => {
-                            setSelectedOrder(order);
-                            setShowOrderDetails(true);
-                          }}
-                          className="text-blue-600 hover:text-blue-900"
-                        >
-                          <Eye className="w-5 h-5" />
-                        </button>
-                        {order.status === 'pending' && (
-                          <>
-                            <button
-                              onClick={() => openConfirmModal(order, 'approve')}
-                              className="text-green-600 hover:text-green-900"
-                            >
-                              <Check className="w-5 h-5" />
-                            </button>
-                            <button
-                              onClick={() => openConfirmModal(order, 'reject')}
-                              className="text-red-600 hover:text-red-900"
-                            >
-                              <X className="w-5 h-5" />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {filteredOrders.map((order) => {
+                  const { name, email } = getOrderCustomerInfo(order);
+                  return (
+                    <tr key={order._id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {order._id}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{name}</div>
+                        <div className="text-sm text-gray-500">{email || 'No email provided'}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {order.cartItems?.length || 0} item(s)
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {formatCurrency(order.totalAmount)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
+                          {getStatusIcon(order.status)}
+                          <span className="ml-1 capitalize">{order.status}</span>
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {formatDate(order.createdAt)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => {
+                              setSelectedOrder(order);
+                              setShowOrderDetails(true);
+                            }}
+                            className="text-blue-600 hover:text-blue-900"
+                          >
+                            <Eye className="w-5 h-5" />
+                          </button>
+                          {order.status === 'pending' && (
+                            <>
+                              <button
+                                onClick={() => openConfirmModal(order, 'approve')}
+                                className="text-green-600 hover:text-green-900"
+                              >
+                                <Check className="w-5 h-5" />
+                              </button>
+                              <button
+                                onClick={() => openConfirmModal(order, 'reject')}
+                                className="text-red-600 hover:text-red-900"
+                              >
+                                <X className="w-5 h-5" />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -315,15 +331,15 @@ const isPDF = (filename) => /\.pdf$/i.test(filename);
                   <div className="bg-gray-50 p-4 rounded-lg space-y-2">
                     <p className="flex items-center">
                       <User className="w-4 h-4 mr-2 text-gray-500" />
-                      <span className="font-medium">{selectedOrder.user.name}</span>
+                      <span className="font-medium">{selectedCustomer?.name || 'Unknown customer'}</span>
                     </p>
                     <p className="flex items-center">
                       <Mail className="w-4 h-4 mr-2 text-gray-500" />
-                      <span>{selectedOrder.user.email}</span>
+                      <span>{selectedCustomer?.email || 'No email provided'}</span>
                     </p>
                     <p className="flex items-center">
                       <Phone className="w-4 h-4 mr-2 text-gray-500" />
-                      <span>{selectedOrder.phoneNumber}</span>
+                      <span>{selectedOrder.phoneNumber || 'Not provided'}</span>
                     </p>
                     <p className="flex items-center">
                       <span className="w-4 h-4 mr-2 text-gray-500" />
@@ -383,7 +399,7 @@ const isPDF = (filename) => /\.pdf$/i.test(filename);
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                      {selectedOrder.cartItems.map((item, index) => (
+                      {selectedOrder.cartItems?.map((item, index) => (
                         <tr key={index}>
                           <td className="px-4 py-2 text-sm text-gray-900">{item.productName}</td>
                           <td className="px-4 py-2 text-sm text-gray-900">{item.quantity}</td>
@@ -404,7 +420,7 @@ const isPDF = (filename) => /\.pdf$/i.test(filename);
                   <h3 className="text-lg font-medium text-gray-900 mb-4">Payment Information</h3>
                   <div className="bg-gray-50 p-4 rounded-lg space-y-2">
                     <p>
-                      <span className="font-medium">Payment Method:</span> {selectedOrder.paymentNarration}
+                      <span className="font-medium">Payment Method:</span> {selectedOrder.paymentNarration || 'Not provided'}
                     </p>
                     {selectedOrder.receiptImage && (
                       <div>
