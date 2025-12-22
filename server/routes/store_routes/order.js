@@ -25,7 +25,15 @@ const upload = multer({ storage });
 // @desc Create a new order
 orderRoutes.post("/", auth, upload.single("receiptImage"), async (req, res) => {
   try {
-    const { paymentNarration, userNote, phoneNumber, studentName, className } = req.body;
+    const {
+      paymentNarration,
+      userNote,
+      phoneNumber,
+      studentName,
+      className,
+      tShirtSize,
+      tracksuitSize,
+    } = req.body;
     const receiptImage = req.file ? `store-receipt/${req.file.filename}` : null;
 
     if (!receiptImage || !phoneNumber) {
@@ -70,6 +78,8 @@ orderRoutes.post("/", auth, upload.single("receiptImage"), async (req, res) => {
       userNote,
       studentName,
       className,
+      tShirtSize,
+      tracksuitSize,
     });
 
     // Optional: clear cart after placing order

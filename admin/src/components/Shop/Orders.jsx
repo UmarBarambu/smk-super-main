@@ -355,6 +355,20 @@ const isPDF = (filename) => /\.pdf$/i.test(filename);
                         {selectedOrder.className || 'Not provided'}
                       </span>
                     </p>
+                    <p className="flex items-center">
+                      <span className="w-4 h-4 mr-2 text-gray-500" />
+                      <span className="text-sm text-gray-700">
+                        <span className="font-medium">T-shirt size:</span>{' '}
+                        {selectedOrder.tShirtSize || 'Not provided'}
+                      </span>
+                    </p>
+                    <p className="flex items-center">
+                      <span className="w-4 h-4 mr-2 text-gray-500" />
+                      <span className="text-sm text-gray-700">
+                        <span className="font-medium">Tracksuit size:</span>{' '}
+                        {selectedOrder.tracksuitSize || 'Not provided'}
+                      </span>
+                    </p>
                   </div>
                 </div>
 

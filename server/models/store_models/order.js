@@ -39,6 +39,12 @@ const orderSchema = new mongoose.Schema(
     className: {
       type: String,
     },
+    tShirtSize: {
+      type: String,
+    },
+    tracksuitSize: {
+      type: String,
+    },
     userNote: {
       type: String,
     },

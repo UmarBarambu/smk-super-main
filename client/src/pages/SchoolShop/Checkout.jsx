@@ -22,6 +22,8 @@ const Checkout = () => {
   const [className, setClassName] = useState(
     user?.className || user?.class || ""
   );
+  const [tShirtSize, setTShirtSize] = useState("");
+  const [tracksuitSize, setTracksuitSize] = useState("");
 
   useEffect(() => {
     fetchCart();
@@ -126,6 +128,8 @@ const fetchCart = async () => {
       formDataToSend.append("paymentNarration", optionalMessage); // You can adjust this if you have a separate field
       formDataToSend.append("studentName", studentName);
       formDataToSend.append("className", className);
+      formDataToSend.append("tShirtSize", tShirtSize);
+      formDataToSend.append("tracksuitSize", tracksuitSize);
       formDataToSend.append("userNote", ""); // Add user note if you have it
       formDataToSend.append("receiptImage", paymentProof);
       // The server expects cart info from the DB, so just send the required fields
@@ -271,6 +275,34 @@ const fetchCart = async () => {
                           onChange={(e) => setClassName(e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-900"
                           placeholder="E.g., Form 1 / Class A"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="md:col-span-2">
+                    <div className="grid md:grid-cols-2 gap-4 mt-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          T-shirt size
+                        </label>
+                        <input
+                          type="text"
+                          value={tShirtSize}
+                          onChange={(e) => setTShirtSize(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-900"
+                          placeholder="E.g., S / M / L / XL"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Tracksuit size
+                        </label>
+                        <input
+                          type="text"
+                          value={tracksuitSize}
+                          onChange={(e) => setTracksuitSize(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-900"
+                          placeholder="E.g., 28 / 30 / 32"
                         />
                       </div>
                     </div>

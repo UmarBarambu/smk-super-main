@@ -532,6 +532,20 @@ const deleteMessage = async (messageId) => {
                         {selectedOrder.className || 'Not provided'}
                       </span>
                     </p>
+                    <p className="flex items-center">
+                      <span className="w-4 h-4 mr-2 text-gray-500" />
+                      <span className="text-sm text-gray-700">
+                        <strong className="mr-2">T-shirt size:</strong>
+                        {selectedOrder.tShirtSize || 'Not provided'}
+                      </span>
+                    </p>
+                    <p className="flex items-center">
+                      <span className="w-4 h-4 mr-2 text-gray-500" />
+                      <span className="text-sm text-gray-700">
+                        <strong className="mr-2">Tracksuit size:</strong>
+                        {selectedOrder.tracksuitSize || 'Not provided'}
+                      </span>
+                    </p>
                   </div>
                 </div>
 
