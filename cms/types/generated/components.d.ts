@@ -1,5 +1,31 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface EventpageEvent extends Struct.ComponentSchema {
+  collectionName: 'components_eventpage_events';
+  info: {
+    description: 'School event information';
+    displayName: 'Event';
+  };
+  attributes: {
+    date: Schema.Attribute.DateTime;
+    details: Schema.Attribute.Text;
+    location: Schema.Attribute.String;
+    time: Schema.Attribute.String;
+    title: Schema.Attribute.String;
+    type: Schema.Attribute.Enumeration<
+      [
+        'Academic',
+        'Sports',
+        'Cultural',
+        'Conference',
+        'Workshop',
+        'Festival',
+        'General',
+      ]
+    >;
+  };
+}
+
 export interface HomepageAcademicExcellence extends Struct.ComponentSchema {
   collectionName: 'components_homepage_academic_excellences';
   info: {
@@ -9,6 +35,32 @@ export interface HomepageAcademicExcellence extends Struct.ComponentSchema {
     excellence: Schema.Attribute.Component<'others.acad-exc-card', true>;
     subtitle: Schema.Attribute.Text;
     title: Schema.Attribute.String;
+  };
+}
+
+export interface HomepageEvent extends Struct.ComponentSchema {
+  collectionName: 'components_homepage_events';
+  info: {
+    description: 'School event information';
+    displayName: 'Event';
+  };
+  attributes: {
+    date: Schema.Attribute.DateTime;
+    details: Schema.Attribute.Text;
+    location: Schema.Attribute.String;
+    time: Schema.Attribute.String;
+    title: Schema.Attribute.String;
+    type: Schema.Attribute.Enumeration<
+      [
+        'Academic',
+        'Sports',
+        'Cultural',
+        'Conference',
+        'Workshop',
+        'Festival',
+        'General',
+      ]
+    >;
   };
 }
 
@@ -254,7 +306,9 @@ export interface SharedSlider extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'eventpage.event': EventpageEvent;
       'homepage.academic-excellence': HomepageAcademicExcellence;
+      'homepage.event': HomepageEvent;
       'homepage.excellence-in-numbers': HomepageExcellenceInNumbers;
       'homepage.extra-activities-highlight': HomepageExtraActivitiesHighlight;
       'homepage.footer': HomepageFooter;
