@@ -14,6 +14,7 @@ export const UpcomingEvents = () => {
           setLoading(true);
           const data = await fetchEvents();
           setEvents(data);
+          setError(null);
         } catch (err) {
           console.error("Failed to load events:", err);
           setError("Failed to load events");
@@ -45,7 +46,13 @@ export const UpcomingEvents = () => {
             </div>
           )}
 
-          {!loading && !error && (
+          {events.length === 0 && !loading && !error && (
+            <div className="text-center py-12">
+              <p className="text-gray-600">No events available</p>
+            </div>
+          )}
+
+          {!loading && !error && events.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {events.map((event) => (
               <div key={event.id} className="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-400 flex">
