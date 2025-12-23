@@ -9,7 +9,7 @@ module.exports = [
     name: 'strapi::cors',
     config: {
       enabled: true,
-      origins: ['http://localhost:5174', 'https://suriaperdana.cloud'], // Local dev & production
+      origins: ['http://localhost:5174'], // 👈 use your React port here
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
       headers: '*',
       keepHeaderOnError: true,

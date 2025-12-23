@@ -35,3 +35,17 @@ export const fetchLatestAnnouncementPage = async () => {
     return null;
   }
 };
+
+// Fetch upcoming events
+export const fetchUpcomingEvents = async () => {
+  try {
+    const res = await api.get("/events?populate=*");
+    return res.data?.data || [];
+  } catch (err) {
+    console.error(
+      "Error fetching events:",
+      err.response?.data || err.message
+    );
+    return [];
+  }
+};
