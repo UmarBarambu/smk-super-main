@@ -1,8 +1,18 @@
 import axios from "axios";
 
-const STRAPI_URL = import.meta.env.VITE_STRAPI_URL || "http://localhost:1337";
+const STRAPI_URL = import.meta.env.VITE_STRAPI_URL;
 
-
+// Fallback data when API is unavailable
+const LOCAL_EVENTS = [
+  {
+    id: 1,
+    title: "School Assembly",
+    date: "2025-12-25",
+    time: "08:00",
+    location: "School Main Hall",
+  },
+  // Add more fallback events as needed
+];
 
 export const fetchEvents = async () => {
   try {
@@ -13,10 +23,10 @@ export const fetchEvents = async () => {
     // Map Strapi response to component format
     return response.data.data.map((event) => ({
       id: event.id,
-      title: event.title,
-      date: event.date,
-      time: event.time,
-      location: event.location,
+      title: event.attributes.title,
+      date: event.attributes.date,
+      time: event.attributes.time,
+      location: event.attributes.location,
     }));
   } catch (error) {
     console.warn("Failed to fetch events from Strapi, using local data:", error.message);
