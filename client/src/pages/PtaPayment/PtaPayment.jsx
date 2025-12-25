@@ -349,10 +349,16 @@ const PtaPayment = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700 transition duration-500"
+              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700 transition duration-500 flex items-center justify-center gap-2"
               disabled={loading}
             >
-              {loading ? "Submitting..." : "Submit Payment"}
+              {loading && (
+                <span
+                  className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
+                  aria-label="Submitting payment"
+                />
+              )}
+              <span>{loading ? "Submitting..." : "Submit Payment"}</span>
             </button>
           </form>
         </div>

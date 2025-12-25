@@ -255,23 +255,33 @@ const Pibg = () => {
                       </a>
                     </td>
                     <td className="px-4 py-2 border text-center">
-                      <select
-                        value={p.status || "pending"}
-                        disabled={updatingId === p._id}
-                        onChange={(e) => handleStatusChange(p._id, e.target.value)}
-                        className="border rounded px-2 py-1 text-center mb-1"
-                      >
-                        <option value="pending">Pending</option>
-                        <option value="verified">Verified</option>
-                        <option value="rejected">Rejected</option>
-                      </select>
-                      <button
-                        onClick={() => handleDelete(p._id)}
-                        disabled={deletingId === p._id}
-                        className="ml-2 bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-xs"
-                      >
-                        {deletingId === p._id ? "Deleting..." : "Delete"}
-                      </button>
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center gap-2">
+                          <select
+                            value={p.status || "pending"}
+                            disabled={updatingId === p._id}
+                            onChange={(e) => handleStatusChange(p._id, e.target.value)}
+                            className="border rounded px-2 py-1 text-center mb-1"
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="verified">Verified</option>
+                            <option value="rejected">Rejected</option>
+                          </select>
+                          {updatingId === p._id && (
+                            <div className="inline-flex items-center gap-1 text-blue-600 text-xs" aria-label="Updating status">
+                              <span className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                              <span>Updating...</span>
+                            </div>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => handleDelete(p._id)}
+                          disabled={deletingId === p._id}
+                          className="ml-2 bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-xs"
+                        >
+                          {deletingId === p._id ? "Deleting..." : "Delete"}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
