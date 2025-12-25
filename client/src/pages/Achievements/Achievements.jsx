@@ -9,7 +9,7 @@ const SchoolAchievements = () => {
       id: 1,
       title: "National Mathematics Olympiad",
       category: "academic",
-      year: "2024",
+      year: "2025",
       description: "First place in the National Mathematics Competition with outstanding performance by our Grade 10 students.",
       image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=250&fit=crop&crop=center",
       icon: <Trophy className="w-6 h-6" />,
@@ -21,7 +21,7 @@ const SchoolAchievements = () => {
       id: 2,
       title: "Regional Science Fair Winner",
       category: "science",
-      year: "2024",
+      year: "2025",
       description: "Our robotics team secured first position in the Regional Science and Technology Fair.",
       image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=250&fit=crop&crop=center",
       icon: <Zap className="w-6 h-6" />,
@@ -33,7 +33,7 @@ const SchoolAchievements = () => {
       id: 3,
       title: "Inter-School Basketball Championship",
       category: "sports",
-      year: "2024",
+      year: "2025",
       description: "Champions of the District Basketball Tournament, showcasing exceptional teamwork and sportsmanship.",
       image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&h=250&fit=crop&crop=center",
       icon: <Medal className="w-6 h-6" />,
@@ -41,42 +41,7 @@ const SchoolAchievements = () => {
       subject: "Sports",
       participants: "12 Players"
     },
-    {
-      id: 4,
-      title: "Outstanding Academic Excellence",
-      category: "academic",
-      year: "2023",
-      description: "Achieved 98% pass rate in national examinations, ranking among top 5 schools in the state.",
-      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9d1?w=400&h=250&fit=crop&crop=center",
-      icon: <BookOpen className="w-6 h-6" />,
-      level: "State",
-      subject: "Overall Performance",
-      participants: "450 Students"
-    },
-    {
-      id: 5,
-      title: "Environmental Conservation Award",
-      category: "community",
-      year: "2024",
-      description: "Recognized for innovative green initiatives and sustainable practices in school operations.",
-      image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=250&fit=crop&crop=center",
-      icon: <Star className="w-6 h-6" />,
-      level: "Regional",
-      subject: "Environmental Science",
-      participants: "200 Students"
-    },
-    {
-      id: 6,
-      title: "Debate Championship",
-      category: "academic",
-      year: "2024",
-      description: "Winners of the State-level English Debate Competition, demonstrating exceptional oratory skills.",
-      image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=400&h=250&fit=crop&crop=center",
-      icon: <Award className="w-6 h-6" />,
-      level: "State",
-      subject: "English Language",
-      participants: "6 Students"
-    }
+   
   ];
 
   const categories = [
@@ -222,7 +187,7 @@ const SchoolAchievements = () => {
               <div className="text-blue-100">Success Rate</div>
             </div>
             <div>
-              <div className="text-3xl font-bold mb-2">2024</div>
+              <div className="text-3xl font-bold mb-2">2025</div>
               <div className="text-blue-100">School of the Year</div>
             </div>
           </div>

@@ -1,15 +1,8 @@
 import mongoose from "mongoose";
 
-const pibgSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-  },
-  parentName: {
-    type: String,
-    required: true,
-  },
-  childName: {
+// Schema for individual student in a payment
+const studentSchema = new mongoose.Schema({
+  name: {
     type: String,
     required: true,
   },
@@ -23,6 +16,18 @@ const pibgSchema = new mongoose.Schema({
     required: true,
     enum: ["ELIT", "MUSYTARI", "UTARID", "URANUS", "ZUHRAH", "ZUHAL"],
   },
+});
+
+const pibgSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+  },
+  parentName: {
+    type: String,
+    required: true,
+  },
+  students: [studentSchema], // Array of 1-3 students
   amount: {
     type: Number,
     required: true,
@@ -39,6 +44,16 @@ const pibgSchema = new mongoose.Schema({
     type: String,
     default: "pending",
     enum: ["pending", "verified", "rejected"],
+  },
+  // Legacy fields for backward compatibility
+  childName: {
+    type: String,
+  },
+  form: {
+    type: String,
+  },
+  class: {
+    type: String,
   },
 });
 

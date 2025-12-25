@@ -637,7 +637,7 @@ const AdminPanel = () => {
           {allChats.length === 0 ? (
             <p className="text-gray-400 text-sm">No chats yet</p>
           ) : (
-            allChats.map((chat) => (
+            allChats.filter(chat => chat.userId).map((chat) => (
               <div
                 key={chat._id}
                 onClick={() => loadUserChat(chat.userId._id)}
@@ -661,7 +661,7 @@ const AdminPanel = () => {
           <div className="bg-blue-600 text-white p-3 rounded-t-lg flex justify-between items-center">
             <span className="font-semibold">
               {selectedUser
-                ? `Chat with ${allChats.find((c) => c.userId._id === selectedUser)?.userId?.name}`
+                ? `Chat with ${allChats.find((c) => c.userId?._id === selectedUser)?.userId?.name || "User"}`
                 : "Select a user"}
             </span>
             <button onClick={() => setShowChat(false)} className="text-white">

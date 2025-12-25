@@ -10,6 +10,10 @@ import {
 } from "lucide-react";
 
 import ppk_teachers_img from "../../../assets/images/PPKI Teachers.jpg";
+import slideimg1 from "../../../assets/images/home-imgs-slide/slideimg1.png";
+import slideimg2 from "../../../assets/images/home-imgs-slide/slideimg2.png";
+import slideimg3 from "../../../assets/images/home-imgs-slide/slideimg3.png";
+import imgslide4 from "../../../assets/images/home-imgs-slide/imgslide4.png";
 
 const SchoolHistory = () => {
   // School leaders data
@@ -247,28 +251,28 @@ const SchoolHistory = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
                       <img
-                        src="/api/placeholder/600/400"
+                        src={slideimg1}
                         alt="School Facilities"
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
                       <img
-                        src="/api/placeholder/600/400"
+                        src={slideimg2}
                         alt="School Building"
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
                       <img
-                        src="/api/placeholder/600/400"
+                        src={slideimg3}
                         alt="School Campus"
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
                       <img
-                        src="/api/placeholder/600/400"
+                        src={imgslide4}
                         alt="School Grounds"
                         className="w-full h-full object-cover"
                       />

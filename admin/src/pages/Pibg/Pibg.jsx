@@ -110,10 +110,22 @@ const Pibg = () => {
       });
     }
 
-    // Otherwise keep the class grouping order
+    // For class filtering, handle both new format (students array) and legacy format
     return [...payments].sort((a, b) => {
-      const aIdx = classOrder.indexOf(a.class);
-      const bIdx = classOrder.indexOf(b.class);
+      // Get classes for a and b
+      const aClasses = a.students && a.students.length > 0 
+        ? a.students.map(s => s.class) 
+        : [a.class];
+      const bClasses = b.students && b.students.length > 0 
+        ? b.students.map(s => s.class) 
+        : [b.class];
+
+      // Get the first class for sorting
+      const aFirstClass = aClasses[0] || "";
+      const bFirstClass = bClasses[0] || "";
+
+      const aIdx = classOrder.indexOf(aFirstClass);
+      const bIdx = classOrder.indexOf(bFirstClass);
       if (aIdx === -1 && bIdx === -1) return 0;
       if (aIdx === -1) return 1;
       if (bIdx === -1) return -1;
@@ -122,7 +134,17 @@ const Pibg = () => {
   })();
 
   const filteredPayments = sortedPayments.filter(p => {
-    if (classFilter !== "all" && p.class !== classFilter) return false;
+    if (classFilter !== "all") {
+      // Check if payment has students array (new format)
+      if (p.students && p.students.length > 0) {
+        // Check if any student matches the filter
+        const hasMatchingClass = p.students.some(s => s.class === classFilter);
+        if (!hasMatchingClass) return false;
+      } else {
+        // Legacy format - check p.class
+        if (p.class !== classFilter) return false;
+      }
+    }
     if (dateFilter) {
       // compare using ISO YYYY-MM-DD from the payment date
       const pIso = new Date(p.date).toISOString().slice(0, 10);
@@ -175,9 +197,9 @@ const Pibg = () => {
               <tr>
                 <th className="px-4 py-2 border">Email</th>
                 <th className="px-4 py-2 border">Parent Name</th>
-                <th className="px-4 py-2 border">Child Name</th>
-                <th className="px-4 py-2 border">Class</th>
-                <th className="px-4 py-2 border">Form</th>
+                <th className="px-4 py-2 border">Student Name(s)</th>
+                <th className="px-4 py-2 border">Class(es)</th>
+                <th className="px-4 py-2 border">Form(s)</th>
                 <th className="px-4 py-2 border">Amount (MYR)</th>
                 <th className="px-4 py-2 border">Date</th>
                 <th className="px-4 py-2 border">Status</th>
@@ -186,60 +208,74 @@ const Pibg = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredPayments.map((p) => (
-                <tr key={p._id}>
-                  <td className="px-4 py-2 border text-center">
-                    {p.email}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {p.parentName}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {p.childName}
-                  </td>
-                  <td className="px-4 py-2 border text-center">{p.class}</td>
-                  <td className="px-4 py-2 border text-center">{p.form ? `Form ${p.form}` : "-"}</td>
-                  <td className="px-4 py-2 border text-center">
-                    <span className="font-bold mr-1">RM</span>
-                    {p.amount}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {formatBookingDate(p.date)}
-                  </td>
-                  <td className="px-4 py-2 border capitalize text-center mx-auto">
-                    {p.status || "pending"}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    <a
-                      href={`${baseUrl}/${p.receipt}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 underline text-center"
-                    >
-                      View
-                    </a>
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    <select
-                      value={p.status || "pending"}
-                      disabled={updatingId === p._id}
-                      onChange={(e) => handleStatusChange(p._id, e.target.value)}
-                      className="border rounded px-2 py-1 text-center mb-1"
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="verified">Verified</option>
-                      <option value="rejected">Rejected</option>
-                    </select>
-                    <button
-                      onClick={() => handleDelete(p._id)}
-                      disabled={deletingId === p._id}
-                      className="ml-2 bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-xs"
-                    >
-                      {deletingId === p._id ? "Deleting..." : "Delete"}
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {filteredPayments.map((p) => {
+                // Handle new format (students array) and legacy format
+                let studentNames = p.childName || "N/A";
+                let classes = p.class || "N/A";
+                let forms = p.form || "N/A";
+
+                if (p.students && p.students.length > 0) {
+                  // Format as numbered list, each on new line
+                  studentNames = p.students.map((s, i) => `${i + 1}. ${s.name}`).join("\n");
+                  classes = p.students.map((s) => `${s.class}`).join("\n");
+                  forms = p.students.map((s) => `Form ${s.form}`).join("\n");
+                }
+
+                return (
+                  <tr key={p._id}>
+                    <td className="px-4 py-2 border text-center">
+                      {p.email}
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      {p.parentName}
+                    </td>
+                    <td className="px-4 py-2 border text-left whitespace-pre-wrap">
+                      {studentNames}
+                    </td>
+                    <td className="px-4 py-2 border text-left whitespace-pre-wrap">{classes}</td>
+                    <td className="px-4 py-2 border text-left whitespace-pre-wrap">{forms}</td>
+                    <td className="px-4 py-2 border text-center">
+                      <span className="font-bold mr-1">RM</span>
+                      {p.amount}
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      {formatBookingDate(p.date)}
+                    </td>
+                    <td className="px-4 py-2 border capitalize text-center mx-auto">
+                      {p.status || "pending"}
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      <a
+                        href={`${baseUrl}/${p.receipt}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 underline text-center"
+                      >
+                        View
+                      </a>
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      <select
+                        value={p.status || "pending"}
+                        disabled={updatingId === p._id}
+                        onChange={(e) => handleStatusChange(p._id, e.target.value)}
+                        className="border rounded px-2 py-1 text-center mb-1"
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="verified">Verified</option>
+                        <option value="rejected">Rejected</option>
+                      </select>
+                      <button
+                        onClick={() => handleDelete(p._id)}
+                        disabled={deletingId === p._id}
+                        className="ml-2 bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-xs"
+                      >
+                        {deletingId === p._id ? "Deleting..." : "Delete"}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

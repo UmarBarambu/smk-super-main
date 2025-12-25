@@ -25,73 +25,80 @@ pibgRoutes.post("/", upload.single("receipt"), async (req, res) => {
     const {
       email,
       parentName,
-      childName,
-      form,
-      class: studentClass,
+      students: studentsJson,
       amount,
       date,
     } = req.body;
     const receipt = req.file?.path;
 
+    // Parse students data
+    let students = [];
+    try {
+      students = JSON.parse(studentsJson || "[]");
+    } catch (err) {
+      return res.status(400).json({ message: "Invalid students data format." });
+    }
+
     // Validate required fields
-    if (
-      !email ||
-      !parentName ||
-      !childName ||
-      !form ||
-      !studentClass ||
-      !amount ||
-      !date ||
-      !receipt
-    ) {
+    if (!email || !parentName || !students || students.length === 0 || !amount || !date || !receipt) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    // Validate `form` and `class` values
+    // Validate students array length (1-3)
+    if (students.length < 1 || students.length > 3) {
+      return res.status(400).json({ message: "Please provide 1 to 3 students." });
+    }
+
+    // Validate each student
     const validForms = ["1", "2", "3", "4", "5"];
     const validClasses = ["ELIT", "MUSYTARI", "UTARID", "URANUS", "ZUHRAH", "ZUHAL"];
-    if (!validForms.includes(form)) {
-      return res.status(400).json({ message: "Invalid form value." });
-    }
-    if (!validClasses.includes(studentClass)) {
-      return res.status(400).json({ message: "Invalid class value." });
+    
+    for (let student of students) {
+      if (!student.name || !student.form || !student.class) {
+        return res.status(400).json({ message: "All student fields are required (name, form, class)." });
+      }
+      if (!validForms.includes(student.form)) {
+        return res.status(400).json({ message: `Invalid form value for student: ${student.name}` });
+      }
+      if (!validClasses.includes(student.class)) {
+        return res.status(400).json({ message: `Invalid class value for student: ${student.name}` });
+      }
     }
 
     const payment = await Pibg.create({
       email,
       parentName,
-      childName,
-      form,
-      class: studentClass,
+      students,
       amount,
       date,
       receipt,
     });
 
+    // Generate student names for email (e.g., "1. John\n2. Jane\n3. Alex")
+    const studentNames = students.map((s, i) => `${i + 1}. ${s.name}`).join("\n");
 
     // Send to parent
-await sendPaymentStatusMail({
-  to: email,
-  parentName,
-  studentName: childName,
-  amt: amount,
-  status: "Pending",
-  paymentRecordId: payment._id.toString(),
-  mailType: "parent",
-});
+    await sendPaymentStatusMail({
+      to: email,
+      parentName,
+      studentName: studentNames,
+      amt: amount,
+      status: "Pending",
+      paymentRecordId: payment._id.toString(),
+      mailType: "parent",
+    });
 
-// Send to admin
-await sendPaymentStatusMail({
-  to: process.env.SCHOOL_ADMIN_EMAIL,
-  parentName,
-  studentName: childName,
-  amt: amount,
-  status: "Pending",
-  paymentRecordId: payment._id.toString(),
-  mailType: "admin",
-  receiptPath: receipt, // uploaded proof
-});
-
+    // Send to admin
+    await sendPaymentStatusMail({
+      to: process.env.SCHOOL_ADMIN_EMAIL,
+      parentName,
+      studentName: studentNames,
+      amt: amount,
+      status: "Pending",
+      paymentRecordId: payment._id.toString(),
+      mailType: "admin",
+      receiptPath: receipt, // uploaded proof
+    });
 
     res.status(201).json({ message: "Payment submitted successfully", payment });
   } catch (err) {
@@ -131,10 +138,16 @@ pibgRoutes.patch("/:id", async (req, res) => {
     // Send email notification
     if (payment.email) {
       try {
+        // Get student names from the students array or fall back to childName
+        let studentName = payment.childName || "Student";
+        if (payment.students && payment.students.length > 0) {
+          studentName = payment.students.map((s, i) => `${i + 1}. ${s.name}`).join("\n");
+        }
+
         await sendPaymentStatusMail({
           to: payment.email,
           parentName: payment.parentName,
-          studentName: payment.childName,
+          studentName,
           amt: payment.amount,
           status: payment.status,
           paymentRecordId: payment._id,
@@ -184,16 +197,29 @@ pibgRoutes.get("/report", async (req, res) => {
   try {
     const payments = await Pibg.find();
     const csv = [
-      ["Parent Name", "Child Name", "Form", "Class", "Amount", "Date", "Status"],
-      ...payments.map((p) => [
-        p.parentName,
-        p.childName,
-        p.form,
-        p.class,
-        p.amount,
-        p.date.toISOString().split("T")[0],
-        p.status,
-      ]),
+      ["Parent Name", "Student Names", "Forms", "Classes", "Amount", "Date", "Status"],
+      ...payments.map((p) => {
+        // Handle new format (students array) and legacy format (childName, form, class)
+        let studentNames = p.childName || "N/A";
+        let forms = p.form || "N/A";
+        let classes = p.class || "N/A";
+
+        if (p.students && p.students.length > 0) {
+          studentNames = p.students.map((s, i) => `${i + 1}. ${s.name}`).join("\n");
+          forms = p.students.map((s) => `Form ${s.form}`).join("\n");
+          classes = p.students.map((s) => `${s.class}`).join("\n");
+        }
+
+        return [
+          p.parentName,
+          studentNames,
+          forms,
+          classes,
+          p.amount,
+          p.date.toISOString().split("T")[0],
+          p.status,
+        ];
+      }),
     ]
       .map((row) => row.join(","))
       .join("\n");
